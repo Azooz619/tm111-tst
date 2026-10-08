@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TM111 — بنك أسئلة المراجعة</title>
+<style>
+:root{--bg:#0b1b30;--panel:#142b45;--panel2:#10243b;--line:#294561;--text:#f4f7fb;--muted:#a9bdd2;--accent:#63dfc2;--accent2:#45cdb0}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#183653 0,#0b1b30 55%);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+header{max-width:1080px;margin:auto;padding:20px 22px;display:flex;align-items:center;justify-content:space-between}
+.logo{width:44px;height:44px;border-radius:14px;background:var(--accent);color:#073025;display:grid;place-items:center;font-weight:900}
+.headtitle{flex:1;margin-right:14px}.headtitle b{font-size:18px}.headtitle small{display:block;color:var(--muted);margin-top:5px}
+.badge{border:1px solid var(--line);border-radius:30px;padding:10px 16px;color:#d6e2ee}
+main{max-width:1080px;margin:10px auto 40px;padding:0 22px}
+.card{background:linear-gradient(145deg,#19334f,#12283f);border:1px solid #2a4863;border-radius:24px;overflow:hidden;box-shadow:0 18px 60px #0005}
+.hero{padding:35px 38px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--accent);font-weight:bold}.hero h1{font-size:34px;margin:12px 0}.hero p{color:var(--muted);font-size:17px}
+.settings{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.setting{background:var(--panel2);border:1px solid var(--line);border-radius:15px;padding:16px}
+.setting label{display:block;color:var(--muted);margin-bottom:8px}
+select,input[type=number]{width:100%;background:#0c2036;color:white;border:1px solid #35536e;border-radius:10px;padding:11px;font-size:15px}
+.start{margin-top:16px;width:100%;background:#164d50;color:var(--accent);border:1px solid #4ccdb3;border-radius:13px;padding:15px;font-size:17px;font-weight:bold;cursor:pointer}
+.quiz{display:none;padding:30px 38px}.top{display:flex;justify-content:space-between;color:var(--muted);margin-bottom:12px}
+.progress{height:8px;background:#0c2036;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:.25s}
+.q{font-size:22px;line-height:1.7;margin:28px 0 20px;font-weight:bold}
+.option{display:block;background:#10263e;border:1px solid #2e4a65;border-radius:13px;padding:14px 16px;margin:10px 0;cursor:pointer;transition:.15s}
+.option:hover{border-color:var(--accent);background:#15324c}.option input{margin-left:10px}
+.code{direction:ltr;text-align:left;background:#091a2c;border:1px solid #294561;border-radius:12px;padding:14px;margin:12px 0;white-space:pre-wrap;font-family:Consolas,monospace;color:#d8f7ee}
+.actions{display:flex;gap:10px;margin-top:25px}.actions button,.result button{padding:13px 20px;border-radius:11px;border:1px solid #385570;cursor:pointer;font-size:15px}
+.next{background:#194d50;color:var(--accent);border-color:#4ccdb3!important}.prev{background:#10263e;color:#dce8f2}.finish{background:#0f7b67;color:#fff}
+.result{display:none;padding:35px 38px}.score{text-align:center;font-size:46px;font-weight:900;color:var(--accent);margin:20px}.result h2{text-align:center}
+.review{margin-top:28px}.reviewItem{border:1px solid #385570;border-radius:13px;padding:14px;margin:10px 0}.bad{background:#3a2028}.good{background:#16382f}.restart{display:block;margin:25px auto;background:#164d50;color:var(--accent)}
+@media(max-width:700px){header{padding:15px}.badge{display:none}.hero,.quiz,.result{padding:25px 20px}.settings{grid-template-columns:1fr}.q{font-size:19px}}
+
+.sectionGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:25px}
+.sectionCard{background:#10263e;border:1px solid #2d4b66;border-radius:15px;padding:20px;text-align:right;color:#fff;cursor:pointer;min-height:125px;transition:.2s}
+.sectionCard:hover{border-color:#63dfc2;background:#15324c;transform:translateY(-2px)}
+.sectionCard strong{display:block;color:#63dfc2;font-size:18px;margin-bottom:9px}
+.sectionCard span{display:block;color:#e9f0f7;line-height:1.6}
+.sectionCard small{display:block;color:#91a9c0;margin-top:10px}
+.sectionCard.all{border-color:#4ccdb3;background:#164d50}
+.selectedTitle{margin-top:22px;color:#63dfc2;font-size:18px;font-weight:bold}
+@media(max-width:700px){.sectionGrid{grid-template-columns:1fr}}
+
+.noRepeatNote{margin-top:14px;padding:12px 14px;background:#10263e;border:1px solid #2d4b66;border-radius:11px;color:#b9ccdd;font-size:14px}
+.resetBank{margin-top:10px;background:transparent;color:#a9bdd2;border:1px solid #385570;border-radius:10px;padding:9px 13px;cursor:pointer}
+.resetBank:hover{color:#fff;border-color:#63dfc2}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">AOU</div>
+  <div class="headtitle"><b>اختبارات تفاعلية — TM111</b><small>بنك أسئلة شامل للمراجعة</small></div>
+  <div class="badge">100+ سؤال</div>
+</header>
+
+<main>
+<div class="card">
+<section class="hero" id="home">
+  <div class="kicker">أسئلة المراجعة</div>
+  <h1>اختر الاجتماع</h1>
+  <p>كل Meeting له قسم مستقل. اختر القسم للمراجعة، أو اختر الاختبار الشامل لجميع الاجتماعات.</p>
+
+  <div class="sectionGrid">
+    <button class="sectionCard" onclick="selectSection('M1')">
+      <strong>Meeting 1</strong>
+      <span>Algorithms, Flowcharts & Pseudocode</span>
+      <small>25 سؤال</small>
+    </button>
+    <button class="sectionCard" onclick="selectSection('M2')">
+      <strong>Meeting 2</strong>
+      <span>Fundamentals of Python Programming</span>
+      <small>32 سؤال</small>
+    </button>
+    <button class="sectionCard" onclick="selectSection('M3')">
+      <strong>Meeting 3</strong>
+      <span>Decision Structures & Boolean Logic</span>
+      <small>24 سؤال</small>
+    </button>
+    <button class="sectionCard" onclick="selectSection('M4')">
+      <strong>Meeting 4</strong>
+      <span>Repetition Structures & Loops</span>
+      <small>21 سؤال</small>
+    </button>
+    <button class="sectionCard" onclick="selectSection('M5')">
+      <strong>Meeting 5</strong>
+      <span>Collection Data Types</span>
+      <small>30 سؤال</small>
+    </button>
+    <button class="sectionCard all" onclick="selectSection('ALL')">
+      <strong>اختبار شامل</strong>
+      <span>جميع الاجتماعات + أسئلة الأكواد والمخرجات</span>
+      <small>بنك الأسئلة كامل</small>
+    </button>
+  </div>
+
+  <div id="settingsBox" style="display:none">
+    <div class="selectedTitle" id="selectedTitle"></div>
+    <div class="settings">
+      <div class="setting"><label>عدد الأسئلة</label><select id="count"><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option><option>75</option><option selected>100</option></select></div>
+      <div class="setting"><label>نوع الأسئلة</label><select id="mode"><option value="all">كل الأسئلة</option><option value="mcq">اختيار من متعدد</option><option value="code">أسئلة الأكواد والمخرجات</option></select></div>
+    </div>
+    <div class="noRepeatNote">🔒 لن تتكرر الأسئلة التي حللتها سابقًا في نفس القسم حتى تنتهي من بنك الأسئلة.</div>
+    <button type="button" class="resetBank" onclick="resetHistory()">مسح سجل الأسئلة السابقة</button>
+    <button class="start" onclick="startQuiz()">ابدأ الاختبار</button>
+  </div>
+</section>
+
+<section class="quiz" id="quiz">
+  <div class="top"><span id="num"></span><span id="cat"></span></div>
+  <div class="progress"><i id="bar"></i></div>
+  <div id="question"></div>
+  <div class="actions"><button class="prev" onclick="prevQ()">السابق</button><button class="next" onclick="nextQ()">التالي</button></div>
+</section>
+
+<section class="result" id="result">
+  <h1>انتهى الاختبار 🎉</h1>
+  <div class="score" id="score"></div>
+  <h2 id="msg"></h2>
+  <div class="review" id="review"></div>
+  <button class="restart" onclick="location.reload()">اختبار جديد</button>
+</section>
+</div>
+</main>
+
+<script>
+const Q=[
+/* Meeting 1 */
+["M1","ما تعريف الـ Algorithm الأدق؟",["مجموعة خطوات مرتبة وواضحة تصف عملية معينة","لغة برمجة","رسم بياني فقط","برنامج جاهز للتشغيل"],0],
+["M1","أي خاصية تعني أن خطوات الخوارزمية واضحة ولا تحمل أكثر من معنى؟",["Input","Unambiguous","Output","Finiteness"],1],
+["M1","كم عدد المدخلات التي يمكن أن تملكها الخوارزمية حسب المحاضرة؟",["واحد فقط","صفر أو أكثر","لا بد من مدخلين","لا يمكن أن تملك مدخلات"],1],
+["M1","كم عدد المخرجات التي ينبغي أن تملكها الخوارزمية؟",["صفر فقط","واحد أو أكثر","مدخل واحد فقط","لا توجد قاعدة"],1],
+["M1","ما المقصود بـ Finiteness؟",["الخوارزمية تعمل بلا نهاية","الخوارزمية تنتهي بعد عدد محدود من الخطوات","الخوارزمية لا تحتاج مدخلات","الخوارزمية مكتوبة بلغة Python"],1],
+["M1","ما المقصود بـ Feasibility؟",["أن تكون الخوارزمية قابلة للتنفيذ بالموارد المتاحة","أن تحتوي على رسم","أن تستخدم while","أن تكون باللغة الإنجليزية"],0],
+["M1","ما المقصود بأن الخوارزمية Independent؟",["تعتمد على Python فقط","خطواتها مستقلة عن كود برمجي محدد","لا تحتوي على Output","لا تحتوي على Input"],1],
+["M1","ما أول خطوة في كتابة Algorithm؟",["اختبار الخوارزمية","تعريف المشكلة","كتابة Python","رسم جدول"],1],
+["M1","ما الذي يجب تحديده بعد تعريف المشكلة؟",["الألوان","المدخلات والمخرجات","نوع الشاشة","اسم المترجم"],1],
+["M1","ما الأداة التي تمثل الخوارزمية بشكل رسومي؟",["Pseudocode","Flowchart","Compiler","Variable"],1],
+["M1","ما الذي تمثله الأشكال في Flowchart؟",["ترتيب الملفات","خطوة في العملية","نوع المتغير","لغة البرمجة"],1],
+["M1","ماذا توضح الأسهم في Flowchart؟",["ترتيب حدوث الخطوات","نوع البيانات","حجم البرنامج","اسم المستخدم"],0],
+["M1","في المحاضرة، توصل صناديق Flowchart بواسطة ماذا؟",["Lines فقط","Arrows","أرقام","تعليقات"],1],
+["M1","كيف تكون اتجاهات Flowchart عادة؟",["من الأسفل للأعلى فقط","من الأعلى للأسفل","دائرية دائمًا","عشوائية"],1],
+["M1","كم مخرجًا يكون لرمز Decision حسب المحاضرة؟",["مخرج واحد","مخرجان","ثلاثة","لا يوجد"],1],
+["M1","ما استخدام Connectors في Flowchart؟",["لتغيير نوع البيانات","للتعامل مع الانقطاعات في المخطط","لتشغيل Python","لحذف الأسهم"],1],
+["M1","بماذا تبدأ وتنتهي جميع Flowcharts؟",["Decision","Terminal","Process","Input"],1],
+["M1","ما المقصود بـ Pseudocode؟",["كود Python قابل للتنفيذ","وصف عام شبيه بالإنجليزية للخوارزمية","مخطط رسومي","ملف .py"],1],
+["M1","هل Pseudocode مرتبط بلغة برمجة محددة؟",["نعم، Python فقط","لا","نعم، Java فقط","نعم، C فقط"],1],
+["M1","أي بنية تنفذ التعليمات واحدة بعد الأخرى؟",["Sequence","Decision","Loop","Sentinel"],0],
+["M1","أي بنية تختار بين مسارات بناءً على شرط؟",["Sequence","Decision","Loop","Input"],1],
+["M1","ما المقصود بالـ iteration؟",["تكرار مجموعة تعليمات","تعريف متغير","طباعة نص","إدخال رقم"],0],
+["M1","أي كلمة تستخدم في pseudocode لتكرار التعليمات طالما الشرط صحيح؟",["WHILE","INPUT","OUTPUT","STOP"],0],
+["M1","في مثال odd/even، ما العملية المستخدمة لمعرفة زوجية الرقم؟",["div","mod","pow","concat"],1],
+["M1","إذا كان number mod 2 = 0 فالعدد يكون؟",["Odd","Even","Negative","Zero دائمًا"],1],
+
+/* Meeting 2 */
+["M2","ماذا تعني IDLE في Python؟",["Integrated DeveLopment Environment","Internet Data Language Engine","Input Data Learning Environment","Integrated Debug Language Editor"],0],
+["M2","أي وضع يعطي Feedback مباشرة للأوامر؟",["Script Mode","Interactive Mode","Flowchart Mode","Compile Mode"],1],
+["M2","أي وضع مناسب لكتابة وحفظ وتشغيل البرامج لاحقًا؟",["Interactive Mode","Script Mode","Decision Mode","Terminal Mode"],1],
+["M2","ما امتداد ملف Python؟",[".python",".py",".pyt",".exe"],1],
+["M2","ما المفتاح المذكور لتشغيل Module في IDLE؟",["F1","F5","F8","F12"],1],
+["M2","ما أول مرحلة في Program Development Cycle؟",["Write Code","Design the Program","Test Program","Correct Logic Errors"],1],
+["M2","ما الذي يحدث بعد تصميم البرنامج؟",["Write the Code","حذف البرنامج","طباعة النتيجة","تغيير الجهاز"],0],
+["M2","ما الخطأ الذي يمنع البرنامج من العمل بشكل صحيح بسبب مخالفة Syntax؟",["Logic Error","Syntax Error","Input Error","Loop Error"],1],
+["M2","ما Logic Error؟",["خطأ يمنع البرنامج من التشغيل دائمًا","خطأ لا يمنع البرنامج من العمل لكنه يعطي نتائج غير صحيحة","خطأ في اسم الملف فقط","خطأ في لوحة المفاتيح"],1],
+["M2","ما نوع البيانات للأعداد الصحيحة؟",["float","int","str","complex"],1],
+["M2","ما نوع البيانات للأعداد العشرية؟",["int","float","bool","list"],1],
+["M2","ما نوع البيانات الذي يمثل True أو False؟",["bool","float","int","complex"],0],
+["M2","أي نوع يمثل complex numbers؟",["complex","tuple","bool","range"],0],
+["M2","كيف يمكن إنشاء String في Python؟",["باستخدام quotes","باستخدام % فقط","باستخدام // فقط","باستخدام range فقط"],0],
+["M2","ماذا تعني == ؟",["إسناد قيمة","مقارنة التساوي","جمع","قسمة"],1],
+["M2","ما ناتج 5 == 4؟",["True","False","5","4"],1],
+["M2","ما ناتج 5 >= 4؟",["True","False","Error","None"],0],
+["M2","ما وظيفة print()؟",["إدخال قيمة","عرض رسالة أو كائن على الشاشة","إنشاء قائمة","تكرار الكود"],1],
+["M2","ما الدالة المستخدمة لإدخال قيمة من المستخدم؟",["input()","print()","eval()","range()"],0],
+["M2","ما نوع القيمة التي تعيدها input() افتراضيًا؟",["int","float","string","bool"],2],
+["M2","أي دالة تحول القيمة إلى int؟",["str()","float()","int()","list()"],2],
+["M2","أي دالة تحول القيمة إلى float؟",["float()","int()","str()","tuple()"],0],
+["M2","أي دالة تحول القيمة إلى string؟",["str()","int()","complex()","range()"],0],
+["M2","أي معامل يستخدم للجمع؟",["+","-","*","/"],0],
+["M2","أي معامل يستخدم للضرب؟",["/","*","//","%"],1],
+["M2","أي معامل يستخدم للقسمة العادية؟",["/","//","%","**"],0],
+["M2","أي معامل يستخدم للقسمة الصحيحة؟",["/","//","%","**"],1],
+["M2","أي معامل يعيد باقي القسمة؟",["%","//","/","**"],0],
+["M2","أي معامل يستخدم للأس؟",["^","**","//","%%"],1],
+["M2","ما ناتج '100' + '-90'؟",["10","100-90","190","Error"],1],
+["M2","ما ناتج 2.5e2؟",["25","250","2500","2.5"],1],
+
+/* Meeting 3 */
+["M3","ما الغرض من Decision Structure؟",["اختيار مسار بناءً على شرط","تخزين قائمة","تكرار دائم","إنشاء ملف"],0],
+["M3","أي كلمة تبدأ الشرط في Python؟",["if","for","while","def"],0],
+["M3","ماذا ينفذ if عندما يكون الشرط True؟",["Block الخاص به","else فقط","لا شيء","البرنامج يتوقف"],0],
+["M3","ماذا يحدث إذا كان شرط if False وكان هناك else؟",["ينفذ if","ينفذ else","ينفذ الاثنين","يتوقف البرنامج"],1],
+["M3","ماذا تفعل else؟",["تلتقط الحالات التي لم تحقق الشروط السابقة","تكرر الكود","تدخل البيانات","تحول النص"],0],
+["M3","ما الكلمة المستخدمة لإضافة شرط آخر بعد if؟",["elseif","elif","else if فقط","another"],1],
+["M3","أي معامل للمقارنة يعني عدم التساوي؟",["==","!=","=","<>"],1],
+["M3","أي معامل يعني التساوي؟",["=","==","===","=>"],1],
+["M3","أي معامل يعني أكبر من؟",["<",">","<=",">="],1],
+["M3","أي معامل يعني أصغر من؟",["<",">","==","!="],0],
+["M3","أي معامل يعني أكبر من أو يساوي؟",["<=",">=","=>","=="],1],
+["M3","أي معامل يعني أصغر من أو يساوي؟",["<=",">=","=<","=="],0],
+["M3","ما وظيفة and؟",["يكفي شرط واحد True","يجب أن يكون كلا الشرطين True","يعكس النتيجة","يحذف الشرط"],1],
+["M3","ما وظيفة or؟",["يجب أن يكون الشرطان True","يكفي أن يكون أحد الشرطين True","يعكس النتيجة","يوقف البرنامج"],1],
+["M3","ما وظيفة not؟",["يجمع شرطين","يعكس الحقيقة Boolean","يقارن النصوص","ينشئ قائمة"],1],
+["M3","ما قيمة not True؟",["True","False","1","None"],1],
+["M3","ما قيمة True and False؟",["True","False","None","Error"],1],
+["M3","ما قيمة True or False؟",["True","False","None","Error"],0],
+["M3","ما قيمة False or False؟",["True","False","1","Error"],1],
+["M3","هل مقارنة Strings في Python حساسة لحالة الأحرف؟",["نعم","لا"],0],
+["M3","هل 'october' تساوي 'October'؟",["نعم","لا"],1],
+["M3","ما المقصود بـ Boolean Variable؟",["متغير له True أو False","متغير نصي فقط","متغير قائمة","متغير عشري فقط"],0],
+["M3","ما معنى Flag في البرمجة حسب المحاضرة؟",["متغير يشير إلى وجود شرط معين","نوع من القوائم","دالة للطباعة","حلقة تكرار"],0],
+["M3","أي حالة مناسبة لاستخدام or: شخص مؤهل إذا كان أقل من 18 أو لديه Student ID؟",["age < 18 and has_student_id","age < 18 or has_student_id","age == 18","not age"],1],
+
+/* Meeting 4 */
+["M4","ما النوعان الرئيسيان من loops المذكوران؟",["count-controlled و condition-controlled","input و output","if و else","list و tuple"],0],
+["M4","أي loop يستخدم عادة للـ count-controlled في Python؟",["for","while","if","else"],0],
+["M4","أي loop يستخدم عادة للـ condition-controlled؟",["for","while","if","range"],1],
+["M4","ما الصيغة العامة للـ for loop؟",["for variable in sequence:","for variable if sequence:","loop variable in:","repeat variable:"],0],
+["M4","ماذا يفعل for i in 'Stars'؟",["يمر على أحرف النص","يحسب طول النص فقط","يحذف النص","يحول النص إلى رقم"],0],
+["M4","ماذا تعطي range(5)؟",["0,1,2,3,4","1,2,3,4,5","0,1,2,3,4,5","5 فقط"],0],
+["M4","ما قيمة start الافتراضية في range؟",["0","1","-1","None"],0],
+["M4","ما قيمة step الافتراضية في range؟",["0","1","2","-1"],1],
+["M4","هل stop في range يتم تضمينه؟",["نعم","لا"],1],
+["M4","ما ناتج range(2,6)؟",["2,3,4,5","2,3,4,5,6","1,2,3,4,5","3,4,5,6"],0],
+["M4","ما ناتج range(1,10,2)؟",["1,3,5,7,9","1,2,3,4,5","2,4,6,8,10","10,8,6,4"],0],
+["M4","ما الغرض من Sentinel؟",["قيمة خاصة تشير إلى التوقف عن إدخال/تكرار البيانات","تحويل النص","إنشاء قائمة","طباعة رقم"],0],
+["M4","أي قيمة يمكن أن تكون Sentinel؟",["0","أي قيمة محددة مسبقًا للتوقف","True فقط","لا توجد قيمة"],1],
+["M4","ما الهدف من Input Validation Loop؟",["التأكد من أن المدخلات صحيحة قبل المتابعة","تغيير لون الشاشة","طباعة القائمة","إنشاء tuple"],0],
+["M4","ماذا يفعل break؟",["ينهي الحلقة مبكرًا","يتخطى التكرار الحالي فقط","يعيد تشغيل البرنامج","يزيد العداد"],0],
+["M4","ماذا يفعل continue؟",["ينهي الحلقة كلها","ينهي التكرار الحالي وينتقل للتكرار التالي","يوقف البرنامج","يحذف المتغير"],1],
+["M4","هل continue يوقف الحلقة بالكامل؟",["نعم","لا"],1],
+["M4","في nested loops، ماذا يحدث للـ inner loop لكل iteration من outer loop؟",["يُعاد ويكمل جميع تكراراته","لا يعمل","يعمل مرة واحدة فقط","يُحذف"],0],
+["M4","في nested loop إذا كان outer = 3 iterations وinner = 4 iterations، كم مرة ينفذ جسم inner إجمالًا؟",["7","12","4","3"],1],
+["M4","أي عبارة صحيحة عن break؟",["يسمح بالاستمرار في الحلقة","يسبب early termination للحلقة","يتخطى iteration فقط","لا يؤثر"],1],
+["M4","أي عبارة صحيحة عن continue؟",["يوقف الحلقة","يوقف البرنامج","يوقف current iteration فقط","يحذف الحلقة"],2],
+
+/* Meeting 5 */
+["M5","ما الفرق الأساسي بين list و tuple؟",["tuple immutable بينما list قابلة للتغيير","list immutable","لا يوجد فرق","tuple لا يمكن قراءتها"],0],
+["M5","ما index أول عنصر في القائمة؟",["0","1","-1","2"],0],
+["M5","إذا كانت list1=[5,7,9,8,10] فما قيمة list1[0]؟",["5","7","10","0"],0],
+["M5","ما الصيغة العامة للـ slicing؟",["list[start:stop:step]","list(start,stop)","list[start-stop]","list{start:stop}"],0],
+["M5","هل stop في slicing مشمول؟",["نعم","لا"],1],
+["M5","ما ناتج [1,2,3,4,5,6,7,8][1:4]؟",["[1,2,3,4]","[2,3,4]","[2,3,4,5]","[1,2,3]"],1],
+["M5","ما ناتج [1,2,3,4,5,6,7,8][:3]؟",["[1,2,3]","[0,1,2]","[1,2,3,4]","[3,4,5]"],0],
+["M5","ما ناتج [1,2,3,4,5,6,7,8][4:]؟",["[4,5,6,7,8]","[5,6,7,8]","[4,5,6,7]","[1,2,3,4]"],1],
+["M5","ما ناتج [1,2,3,4,5,6,7,8][::2]؟",["[1,3,5,7]","[2,4,6,8]","[1,2,3,4]","[8,6,4,2]"],0],
+["M5","ماذا تفعل append(item)؟",["تضيف العنصر إلى نهاية القائمة","تحذف العنصر","ترتب القائمة","تعكس القائمة"],0],
+["M5","ماذا تفعل index(item)؟",["تعيد index لأول عنصر مطابق","تحذف العنصر","تضيف عنصرًا","تعكس القائمة"],0],
+["M5","ماذا تفعل insert(index,item)؟",["تضيف العنصر في index محدد","تحذف العنصر","ترتب القائمة","تحسب المتوسط"],0],
+["M5","ماذا تفعل sort()؟",["ترتب من الأقل إلى الأعلى/0-9 وA-Z","تحذف القائمة","تعكس القائمة فقط","تكرر العناصر"],0],
+["M5","ماذا تفعل sort(reverse=True)؟",["ترتب من الأعلى إلى الأقل","تحذف آخر عنصر","تضيف عنصرًا","تنسخ القائمة"],0],
+["M5","ماذا تفعل remove(item)؟",["تحذف أول occurrence للقيمة","تحذف آخر عنصر دائمًا","تضيف قيمة","ترتب"],0],
+["M5","ماذا تفعل reverse()؟",["تعكس ترتيب العناصر","ترتب تصاعديًا","تحذف العناصر","تحسب العدد"],0],
+["M5","ماذا تفعل count(item)؟",["تحسب عدد مرات ظهور item","تحذف item","تعيد index","ترتب"],0],
+["M5","ماذا تفعل pop(index)؟",["تحذف العنصر عند index وتعيد قيمته","تضيف عنصرًا","تعكس القائمة","تحسب المتوسط"],0],
+["M5","ما المقصود بـ Two-dimensional list؟",["قائمة تحتوي قوائم داخلها","tuple واحد","قائمة فارغة","قائمة أرقام فقط"],0],
+["M5","هل tuple قابلة للتعديل بعد إنشائها؟",["نعم","لا"],1],
+["M5","كيف تنشئ tuple من عنصر واحد؟",["(5,)","(5)","[5]","tuple[5]"],0],
+["M5","ماذا تعتبر (5) في Python؟",["tuple","int","list","string"],1],
+["M5","أي method لا تدعمها tuple؟",["index()","append()","count()","لا شيء"],1],
+["M5","أي built-in functions تدعمها tuple؟",["sum وlen وmin وmax","append وremove","insert وsort","reverse فقط"],0],
+["M5","كيف تحول tuple إلى list؟",["list(my_tuple)","tuple(my_tuple)","str(my_tuple)","int(my_tuple)"],0],
+["M5","كيف تحول list إلى tuple؟",["tuple(my_list)","list(my_list)","float(my_list)","range(my_list)"],0],
+["M5","لماذا يمكن استخدام tuple؟",["الأمان من التغيير والأداء","لأنها قابلة للتعديل أكثر","لأنها لا يمكن قراءتها","لأنها لا تدعم indexing"],0],
+["M5","هل tuple تدعم slicing؟",["نعم","لا"],0],
+["M5","هل tuple تدعم + و *؟",["نعم","لا"],0],
+["M5","ما نتيجة average للـ second elements في [(1,5),(2,8),(3,11)]؟",["6","8.0","11","5.0"],1],
+
+/* Extra source-based questions */
+["M1","في خوارزمية إيجاد متوسط ستة أرقام عندما يكون المجموع معطى، كيف يحسب المتوسط؟",["sum + 6","sum / 6","sum * 6","6 / sum"],1],
+["M1","في خوارزمية رقمين التي تحسب sum و product، كيف يحسب product؟",["number1 + number2","number1 - number2","number1 * number2","number1 / number2"],2],
+["M1","في مثال مساحة المثلث، ما الشرط المطلوب للـ base و height؟",["أن يكونا أقل من صفر","أن يكونا أكبر من صفر","أن يكونا متساويين","أن يكون أحدهما نصًا"],1],
+["M1","ما الاسم الآخر لـ Decision Structure في المحاضرة؟",["Selection structure","Sequence structure","Input structure","Terminal structure"],0],
+["M2","أي نوع من البيانات يمكن أن يكتب بالـ scientific notation مثل 2.5e2؟",["int","float","bool","tuple"],1],
+["M2","ما قيمة 2.5e2؟",["25","250","2500","2.5"],1],
+["M2","أي قيمة من التالي Boolean؟",["3.14","True","'True'","3"],1],
+["M2","ما نوع البيانات للنص الموجود بين علامات الاقتباس؟",["string","int","float","complex"],0],
+["M2","ما قيمة 5>=4؟",["True","False","5","4"],0],
+["M2","ما الرمز الذي يجعل ما بعده Comment في Python؟",["//","#","--",";"],1],
+["M2","ما وظيفة end في print()؟",["تحديد ما يطبع في نهاية عملية الطباعة","تحديد بداية البرنامج","تحويل الرقم","إنشاء متغير"],0],
+["M2","ما قيمة end الافتراضية في print()؟",["' '","'\\n'","''","None"],1],
+["M2","ما وظيفة sep في print()؟",["تحديد الفاصل بين عدة arguments","تحديد نهاية البرنامج","تحويل النص إلى رقم","تكرار النص"],0],
+["M2","ما الناتج من print('I','Love','Python',sep='')؟",["I Love Python","ILovePython","I*Love*Python","I-Love-Python"],1],
+["M2","ما وظيفة \\n داخل string؟",["سطر جديد","Tab","مسافة","Backslash"],0],
+["M2","ما وظيفة \\t داخل string؟",["سطر جديد","Tab","حذف النص","اقتباس"],1],
+["M2","ما وظيفة format(12345.6789,'.2f')؟",["عرض الرقم بمنزلتين عشريتين","تحويله إلى int","تقريب إلى 2 فقط","حذف الرقم"],0],
+["M3","إذا كانت if False ثم elif True، أي block ينفذ؟",["if","elif","else","كلها"],1],
+["M3","في if-elif-else، كم else يمكن أن يحتويه if واحد؟",["واحد","اثنان دائمًا","ثلاثة","غير محدود"],0],
+["M3","في if-elif-else، هل يمكن وجود عدة elif؟",["نعم","لا"],0],
+["M3","إذا كان عدد الشروط n في سلسلة if-elif-else، فحسب المحاضرة عدد elif هو؟",["n","n-1","n-2","2n"],2],
+["M3","في مثال x=15، ما الناتج من الشرط الداخلي x>20؟",["above 20","but not above 20","Done فقط","Error"],1],
+["M3","ما المقصود بـ nested if؟",["if داخل if أخرى","if بدون else","عدة loops","قائمة داخل tuple"],0],
+["M3","حسب مثال الدرجات، ما الرسالة للدرجة 90 أو أعلى؟",["Pass","Second Class","First Class","Distinction"],3],
+["M3","حسب مثال الدرجات، ما الرسالة للدرجة 75؟",["Distinction","First Class","Second Class","Fail"],2],
+["M4","أي نوع من الـ loop يستخدم عندما لا نعرف مسبقًا عدد مرات التكرار؟",["Condition-controlled / while","Count-controlled / for","if","range فقط"],0],
+["M4","هل while loop يفحص الشرط قبل تنفيذ التكرار؟",["نعم","لا"],0],
+["M4","إذا أصبح شرط while False، ماذا يحدث؟",["تستمر الحلقة للأبد","تنتهي الحلقة","تبدأ من جديد","ينفذ else دائمًا"],1],
+["M4","في المثال x=1 و while x<4، ما القيم التي يتم تربيعها؟",["0,1,2","1,2,3","1,2,3,4","2,3,4"],1],
+["M4","ما ناتج مربع 3 في مثال while؟",["3","6","9","12"],2],
+["M4","في range(5)، ما آخر رقم في التسلسل؟",["4","5","6","0"],0],
+["M4","ما قيمة step الافتراضية في range؟",["-1","0","1","2"],2],
+["M4","أي عبارة تصف while بأنها pretest loop؟",["تفحص الشرط قبل iteration","تفحص الشرط بعد iteration","لا تفحص الشرط","تفحص الشرط مرة واحدة فقط"],0],
+["M4","في مثال إدخال 10 أرقام، ما الهدف من المتغير largest؟",["تخزين أكبر رقم تم إدخاله حتى الآن","تخزين عدد الأرقام","تخزين أصغر رقم","تخزين المتوسط"],0],
+["M4","في مثال إدخال 10 أرقام، كم مرة تعمل حلقة for؟",["5","10","11","حتى يكتب المستخدم 0"],1],
+["M5","ما نوع البيانات الذي يسمح بتغيير عناصره بعد إنشائه؟",["list","tuple","string فقط","range فقط"],0],
+["M5","ما معنى indexing في القوائم؟",["الوصول إلى عنصر باستخدام موقعه","ترتيب القائمة","حذف القائمة","نسخ القائمة"],0],
+["M5","ما فائدة slicing؟",["استخراج جزء من sequence","حذف كل العناصر","تحويل list إلى tuple فقط","فرز العناصر"],0],
+["M5","ما قيمة [10,20,30][-1]؟",["10","20","30","-1"],2],
+["M5","ماذا يعني ترك start فارغًا في slicing؟",["يبدأ من أول عنصر","يبدأ من آخر عنصر","يبدأ من الصفر دائمًا كقيمة","لا يرجع شيئًا"],0],
+["M5","ماذا يعني ترك stop فارغًا في slicing؟",["يتوقف عند أول عنصر","يمتد إلى نهاية sequence","يعطي آخر عنصر فقط","يعطي index فقط"],1],
+["M5","ما وظيفة list concatenation باستخدام +؟",["دمج القوائم","حذف القوائم","ترتيب القوائم","تكرار العنصر الأخير"],0],
+["M5","ما وظيفة list repetition باستخدام *؟",["تكرار محتوى القائمة","ضرب كل عنصر حسابيًا","حذف القائمة","ترتيب القائمة"],0],
+["M5","في قائمة strings، كيف نعرف عدد strings التي طولها أكبر من 5 في مثال المحاضرة؟",["باستخدام len(s)>5 داخل loop","باستخدام sum(strings)","باستخدام tuple فقط","باستخدام sort فقط"],0],
+["M5","في مثال أطول string، ما أول أطول string في ['apple','banana','kiwi','orange','grape']؟",["apple","banana","orange","grape"],1],
+["M5","في مثال largest prime، ما أكبر prime في [4,6,8,11,13,15]؟",["11","13","15","8"],1],
+
+/* Code/output */
+["CODE","ما ناتج الكود؟\nfor i in range(5):\n    print(i)",["0 1 2 3 4","1 2 3 4 5","0 1 2 3 4 5","5"],0],
+["CODE","ما ناتج الكود؟\nfor i in range(2,6):\n    print(i)",["2 3 4 5","2 3 4 5 6","1 2 3 4 5","3 4 5 6"],0],
+["CODE","ما ناتج الكود؟\nx=0\nwhile x<3:\n    x+=1\n    print(x)",["0 1 2","1 2 3","1 2","0 1 2 3"],1],
+["CODE","ما ناتج الكود؟\nx=0\nwhile x<5:\n    x+=1\n    if x==3:\n        continue\n    print(x)",["1 2 3 4 5","1 2 4 5","0 1 2 4","1 2"],1],
+["CODE","ما ناتج الكود؟\nx=0\nwhile x<5:\n    x+=1\n    if x==3:\n        break\n    print(x)",["1 2","1 2 3","1 2 4 5","3"],0],
+["CODE","ما ناتج الكود؟\na=33\nb=200\nif b>a:\n    print('b is greater than a')",["b is greater than a","a is greater than b","False","لا شيء"],0],
+["CODE","ما ناتج الكود؟\nname1='Majed'\nname2='Majeda'\nif name1==name2:\n    print('same')\nelse:\n    print('NOT same')",["same","NOT same","True","Error"],1],
+["CODE","ما ناتج الكود؟\nprint(5+2*4)",["28","13","20","11"],1],
+["CODE","ما ناتج الكود؟\nprint('Hi'*3)",["HiHiHi","Hi3","3Hi","Error"],0],
+["CODE","ما ناتج الكود؟\nprint('A'+'B')",["AB","A B","A+B","Error"],0],
+["CODE","ما ناتج الكود؟\nprint([1,2,3][1])",["1","2","3","0"],1],
+["CODE","ما ناتج الكود؟\na=[1,2,3]\na.append(4)\nprint(a)",["[1,2,3]","[1,2,3,4]","[4,1,2,3]","4"],1],
+["CODE","ما ناتج الكود؟\na=[3,1,2]\na.sort()\nprint(a)",["[3,1,2]","[1,2,3]","[2,1,3]","3"],1],
+["CODE","ما ناتج الكود؟\nt=(1,2,3)\nprint(t[1])",["1","2","3","Error"],1],
+["CODE","ما ناتج الكود؟\nprint(5%2)",["0","1","2","2.5"],1]
+];
+
+let pool=[],current=0,answers=[],picked=[],selectedSection='ALL';
+function shuffle(a){return a.sort(()=>Math.random()-0.5)}
+function historyKey(){return 'tm111_used_' + selectedSection;}
+function getUsed(){try{return JSON.parse(localStorage.getItem(historyKey())||'[]')}catch(e){return []}}
+function saveUsed(ids){localStorage.setItem(historyKey(),JSON.stringify(ids))}
+function resetHistory(){
+  if(confirm('هل تريد مسح سجل الأسئلة التي حللتها والبدء من جديد؟')){
+    if(selectedSection==='ALL'){
+      ['M1','M2','M3','M4','M5','ALL'].forEach(k=>localStorage.removeItem('tm111_used_'+k));
+    }else localStorage.removeItem(historyKey());
+    alert('تم مسح سجل الأسئلة.');
+  }
+}
+function selectSection(section){
+ selectedSection=section;
+ const names={M1:'Meeting 1 — Algorithms, Flowcharts & Pseudocode',M2:'Meeting 2 — Fundamentals of Python Programming',M3:'Meeting 3 — Decision Structures & Boolean Logic',M4:'Meeting 4 — Repetition Structures & Loops',M5:'Meeting 5 — Collection Data Types',ALL:'اختبار شامل — جميع الاجتماعات'};
+ document.getElementById('selectedTitle').textContent='القسم المختار: '+names[section];
+ document.getElementById('settingsBox').style.display='block';
+ document.getElementById('settingsBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function startQuiz(){
+ const n=+document.getElementById('count').value, mode=document.getElementById('mode').value;
+ let p=Q.filter(x=>
+   (selectedSection==='ALL'||x[0]===selectedSection) &&
+   (mode==='all'||(mode==='code'&&x[0]==='CODE')||(mode==='mcq'&&x[0]!=='CODE'))
+ );
+ if(selectedSection!=='ALL' && mode==='code') p=[];
+ if(!p.length){alert('لا توجد أسئلة من النوع المختار في هذا القسم.');return}
+
+ // Use the array index as a stable question ID. Previously completed questions are excluded.
+ const allIds=p.map(x=>Q.indexOf(x));
+ const used=getUsed().filter(id=>allIds.includes(id));
+ const available=p.filter(x=>!used.includes(Q.indexOf(x)));
+ let chosen;
+ if(available.length>=n){
+   chosen=shuffle([...available]).slice(0,n);
+ }else{
+   // If fewer than requested remain, give all remaining instead of repeating.
+   chosen=shuffle([...available]);
+ }
+ if(!chosen.length){
+   alert('خلصت كل أسئلة هذا القسم بدون تكرار 🎉\nاضغط "مسح سجل الأسئلة السابقة" إذا تبي تعيد البنك من البداية.');
+   return;
+ }
+ pool=chosen;
+ answers=Array(pool.length).fill(null);current=0;
+ document.getElementById('home').style.display='none';
+ document.getElementById('quiz').style.display='block';render();
+}
+function render(){
+ const x=pool[current], title=x[0]==='CODE'?'أسئلة الأكواد والمخرجات':x[0]==='M1'?'Meeting 1 — Algorithms':x[0]==='M2'?'Meeting 2 — Python':x[0]==='M3'?'Meeting 3 — Decisions':x[0]==='M4'?'Meeting 4 — Repetition':'Meeting 5 — Collections';
+ document.getElementById('num').textContent=`السؤال ${current+1} من ${pool.length}`;
+ document.getElementById('cat').textContent=title;
+ document.getElementById('bar').style.width=((current+1)/pool.length*100)+'%';
+ let text=x[1], parts=text.split('\n'), html=`<div class="q">${parts[0]}`;
+ if(parts.length>1) html+=`<div class="code">${parts.slice(1).join('\n')}</div>`;
+ html+=`</div>`;
+ x[2].forEach((o,i)=>html+=`<label class="option"><input type="radio" name="ans" value="${i}" ${answers[current]===i?'checked':''}>${o}</label>`);
+ document.getElementById('question').innerHTML=html;
+ document.querySelector('.prev').style.visibility=current?'visible':'hidden';
+ document.querySelector('.next').textContent=current===pool.length-1?'إنهاء الاختبار':'التالي';
+}
+function save(){let e=document.querySelector('input[name="ans"]:checked');if(e)answers[current]=+e.value}
+function nextQ(){save();if(current<pool.length-1){current++;render()}else finish()}
+function prevQ(){save();if(current){current--;render()}}
+function finish(){
+ save();let score=0,review='';
+ pool.forEach((x,i)=>{
+  let ok=answers[i]===x[3];if(ok)score++;
+  review+=`<div class="reviewItem ${ok?'good':'bad'}"><b>السؤال ${i+1}</b> — ${ok?'✓ صحيح':'✗ خطأ'}<br>${ok?'':'الإجابة الصحيحة: '+x[2][x[3]]}</div>`;
+ });
+ // Mark these questions as used only after the whole quiz is completed.
+ const oldUsed=getUsed();
+ const newIds=pool.map(x=>Q.indexOf(x));
+ saveUsed([...new Set([...oldUsed,...newIds])]);
+
+ document.getElementById('quiz').style.display='none';document.getElementById('result').style.display='block';
+ let pct=Math.round(score/pool.length*100);
+ document.getElementById('score').textContent=`${score} / ${pool.length} — ${pct}%`;
+ document.getElementById('msg').textContent=pct===100?'ممتاز! كل الإجابات صحيحة 🔥':pct>=85?'ممتاز جدًا، مستواك قوي 💪':pct>=70?'جيد جدًا، راجع الأخطاء البسيطة 📚':'راجع المحاضرات وحاول مرة ثانية 💡';
+ const remaining=Q.filter(x=>(selectedSection==='ALL'||x[0]===selectedSection)&&!getUsed().includes(Q.indexOf(x))).length;
+ document.getElementById('review').innerHTML=`<div class="noRepeatNote">🔒 بقي لك تقريبًا ${remaining} سؤال غير محلول في هذا القسم قبل أن يبدأ التكرار.</div>`+review;
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
