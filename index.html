@@ -1,422 +1,733 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TM111 — بنك أسئلة المراجعة</title>
-<style>
-:root{--bg:#0b1b30;--panel:#142b45;--panel2:#10243b;--line:#294561;--text:#f4f7fb;--muted:#a9bdd2;--accent:#63dfc2;--accent2:#45cdb0}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at top,#183653 0,#0b1b30 55%);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
-header{max-width:1080px;margin:auto;padding:20px 22px;display:flex;align-items:center;justify-content:space-between}
-.logo{width:44px;height:44px;border-radius:14px;background:var(--accent);color:#073025;display:grid;place-items:center;font-weight:900}
-.headtitle{flex:1;margin-right:14px}.headtitle b{font-size:18px}.headtitle small{display:block;color:var(--muted);margin-top:5px}
-.badge{border:1px solid var(--line);border-radius:30px;padding:10px 16px;color:#d6e2ee}
-main{max-width:1080px;margin:10px auto 40px;padding:0 22px}
-.card{background:linear-gradient(145deg,#19334f,#12283f);border:1px solid #2a4863;border-radius:24px;overflow:hidden;box-shadow:0 18px 60px #0005}
-.hero{padding:35px 38px;border-bottom:1px solid var(--line)}
-.kicker{color:var(--accent);font-weight:bold}.hero h1{font-size:34px;margin:12px 0}.hero p{color:var(--muted);font-size:17px}
-.settings{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
-.setting{background:var(--panel2);border:1px solid var(--line);border-radius:15px;padding:16px}
-.setting label{display:block;color:var(--muted);margin-bottom:8px}
-select,input[type=number]{width:100%;background:#0c2036;color:white;border:1px solid #35536e;border-radius:10px;padding:11px;font-size:15px}
-.start{margin-top:16px;width:100%;background:#164d50;color:var(--accent);border:1px solid #4ccdb3;border-radius:13px;padding:15px;font-size:17px;font-weight:bold;cursor:pointer}
-.quiz{display:none;padding:30px 38px}.top{display:flex;justify-content:space-between;color:var(--muted);margin-bottom:12px}
-.progress{height:8px;background:#0c2036;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:.25s}
-.q{font-size:22px;line-height:1.7;margin:28px 0 20px;font-weight:bold}
-.option{display:block;background:#10263e;border:1px solid #2e4a65;border-radius:13px;padding:14px 16px;margin:10px 0;cursor:pointer;transition:.15s}
-.option:hover{border-color:var(--accent);background:#15324c}.option input{margin-left:10px}
-.code{direction:ltr;text-align:left;background:#091a2c;border:1px solid #294561;border-radius:12px;padding:14px;margin:12px 0;white-space:pre-wrap;font-family:Consolas,monospace;color:#d8f7ee}
-.actions{display:flex;gap:10px;margin-top:25px}.actions button,.result button{padding:13px 20px;border-radius:11px;border:1px solid #385570;cursor:pointer;font-size:15px}
-.next{background:#194d50;color:var(--accent);border-color:#4ccdb3!important}.prev{background:#10263e;color:#dce8f2}.finish{background:#0f7b67;color:#fff}
-.result{display:none;padding:35px 38px}.score{text-align:center;font-size:46px;font-weight:900;color:var(--accent);margin:20px}.result h2{text-align:center}
-.review{margin-top:28px}.reviewItem{border:1px solid #385570;border-radius:13px;padding:14px;margin:10px 0}.bad{background:#3a2028}.good{background:#16382f}.restart{display:block;margin:25px auto;background:#164d50;color:var(--accent)}
-@media(max-width:700px){header{padding:15px}.badge{display:none}.hero,.quiz,.result{padding:25px 20px}.settings{grid-template-columns:1fr}.q{font-size:19px}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبارات تفاعلية - 200 سؤال MTA (TM111)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b131f;
+            --card-bg: #132235;
+            --accent-green: #36b37e;
+            --accent-green-hover: #2d9669;
+            --text-main: #ffffff;
+            --text-muted: #8c9ba5;
+            --border-color: #1e324a;
+            --correct-bg: #0e382b;
+            --correct-border: #13734e;
+            --incorrect-bg: #3d141d;
+            --incorrect-border: #a12b42;
+        }
 
-.sectionGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:25px}
-.sectionCard{background:#10263e;border:1px solid #2d4b66;border-radius:15px;padding:20px;text-align:right;color:#fff;cursor:pointer;min-height:125px;transition:.2s}
-.sectionCard:hover{border-color:#63dfc2;background:#15324c;transform:translateY(-2px)}
-.sectionCard strong{display:block;color:#63dfc2;font-size:18px;margin-bottom:9px}
-.sectionCard span{display:block;color:#e9f0f7;line-height:1.6}
-.sectionCard small{display:block;color:#91a9c0;margin-top:10px}
-.sectionCard.all{border-color:#4ccdb3;background:#164d50}
-.selectedTitle{margin-top:22px;color:#63dfc2;font-size:18px;font-weight:bold}
-@media(max-width:700px){.sectionGrid{grid-template-columns:1fr}}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
 
-.noRepeatNote{margin-top:14px;padding:12px 14px;background:#10263e;border:1px solid #2d4b66;border-radius:11px;color:#b9ccdd;font-size:14px}
-.resetBank{margin-top:10px;background:transparent;color:#a9bdd2;border:1px solid #385570;border-radius:10px;padding:9px 13px;cursor:pointer}
-.resetBank:hover{color:#fff;border-color:#63dfc2}
-</style>
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background-color: #65d6ad;
+            color: #0b131f;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .header-text h2 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
+
+        .header-text p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-green);
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-green);
+            color: #0b131f;
+            font-weight: bold;
+            border-color: var(--accent-green);
+        }
+
+        .quiz-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option-item {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.2s;
+            direction: ltr;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent-green);
+            background-color: rgba(54, 179, 126, 0.05);
+        }
+
+        .radio-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .option-item.selected .radio-icon {
+            border-color: var(--accent-green);
+        }
+
+        .option-item.selected .radio-icon::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+        }
+
+        .feedback-box {
+            display: none;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .feedback-box.correct {
+            background-color: var(--correct-bg);
+            border: 1px solid var(--correct-border);
+            color: #72f2b8;
+        }
+
+        .feedback-box.incorrect {
+            background-color: var(--incorrect-bg);
+            border: 1px solid var(--incorrect-border);
+            color: #ff99aa;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .feedback-ref {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 8px;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-action {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-finish {
+            border-color: #a12b42;
+            color: #ff99aa;
+        }
+
+        .btn-next {
+            background-color: var(--accent-green);
+            color: #0b131f;
+            font-weight: bold;
+            border: none;
+        }
+
+        .btn-next:hover {
+            background-color: var(--accent-green-hover);
+        }
+
+        .footer-nav {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        select {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            outline: none;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="logo">AOU</div>
-  <div class="headtitle"><b>اختبارات تفاعلية — TM111</b><small>بنك أسئلة شامل للمراجعة</small></div>
-  <div class="badge">100+ سؤال</div>
-</header>
 
-<main>
-<div class="card">
-<section class="hero" id="home">
-  <div class="kicker">أسئلة المراجعة</div>
-  <h1>اختر الاجتماع</h1>
-  <p>كل Meeting له قسم مستقل. اختر القسم للمراجعة، أو اختر الاختبار الشامل لجميع الاجتماعات.</p>
-
-  <div class="sectionGrid">
-    <button class="sectionCard" onclick="selectSection('M1')">
-      <strong>Meeting 1</strong>
-      <span>Algorithms, Flowcharts & Pseudocode</span>
-      <small>25 سؤال</small>
-    </button>
-    <button class="sectionCard" onclick="selectSection('M2')">
-      <strong>Meeting 2</strong>
-      <span>Fundamentals of Python Programming</span>
-      <small>32 سؤال</small>
-    </button>
-    <button class="sectionCard" onclick="selectSection('M3')">
-      <strong>Meeting 3</strong>
-      <span>Decision Structures & Boolean Logic</span>
-      <small>24 سؤال</small>
-    </button>
-    <button class="sectionCard" onclick="selectSection('M4')">
-      <strong>Meeting 4</strong>
-      <span>Repetition Structures & Loops</span>
-      <small>21 سؤال</small>
-    </button>
-    <button class="sectionCard" onclick="selectSection('M5')">
-      <strong>Meeting 5</strong>
-      <span>Collection Data Types</span>
-      <small>30 سؤال</small>
-    </button>
-    <button class="sectionCard all" onclick="selectSection('ALL')">
-      <strong>اختبار شامل</strong>
-      <span>جميع الاجتماعات + أسئلة الأكواد والمخرجات</span>
-      <small>بنك الأسئلة كامل</small>
-    </button>
-  </div>
-
-  <div id="settingsBox" style="display:none">
-    <div class="selectedTitle" id="selectedTitle"></div>
-    <div class="settings">
-      <div class="setting"><label>عدد الأسئلة</label><select id="count"><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option><option>75</option><option selected>100</option></select></div>
-      <div class="setting"><label>نوع الأسئلة</label><select id="mode"><option value="all">كل الأسئلة</option><option value="mcq">اختيار من متعدد</option><option value="code">أسئلة الأكواد والمخرجات</option></select></div>
+<div class="container">
+    <div class="header">
+        <div class="header-title">
+            <div class="logo-badge">AOU</div>
+            <div class="header-text">
+                <h2>اختبارات تفاعلية (الجامعة العربية المفتوحة)</h2>
+                <p>بنك أسئلة الشامل الكلي - 200 سؤال كاملة (TM111)</p>
+            </div>
+        </div>
     </div>
-    <div class="noRepeatNote">🔒 لن تتكرر الأسئلة التي حللتها سابقًا في نفس القسم حتى تنتهي من بنك الأسئلة.</div>
-    <button type="button" class="resetBank" onclick="resetHistory()">مسح سجل الأسئلة السابقة</button>
-    <button class="start" onclick="startQuiz()">ابدأ الاختبار</button>
-  </div>
-</section>
 
-<section class="quiz" id="quiz">
-  <div class="top"><span id="num"></span><span id="cat"></span></div>
-  <div class="progress"><i id="bar"></i></div>
-  <div id="question"></div>
-  <div class="actions"><button class="prev" onclick="prevQ()">السابق</button><button class="next" onclick="nextQ()">التالي</button></div>
-</section>
+    <!-- Section Navigation Tabs -->
+    <div class="tabs-container">
+        <button class="tab-btn active" id="tab-all" onclick="switchSection('all')">الشامل الكلي (200 سؤال)</button>
+        <button class="tab-btn" id="tab-m1" onclick="switchSection('m1')">Meeting 1 (40 سؤالاً)</button>
+        <button class="tab-btn" id="tab-m2" onclick="switchSection('m2')">Meeting 2 (40 سؤالاً)</button>
+        <button class="tab-btn" id="tab-m3" onclick="switchSection('m3')">Meeting 3 (40 سؤالاً)</button>
+        <button class="tab-btn" id="tab-m4" onclick="switchSection('m4')">Meeting 4 (40 سؤالاً)</button>
+        <button class="tab-btn" id="tab-m5" onclick="switchSection('m5')">Meeting 5 (40 سؤالاً)</button>
+    </div>
 
-<section class="result" id="result">
-  <h1>انتهى الاختبار 🎉</h1>
-  <div class="score" id="score"></div>
-  <h2 id="msg"></h2>
-  <div class="review" id="review"></div>
-  <button class="restart" onclick="location.reload()">اختبار جديد</button>
-</section>
+    <!-- Quiz Main Card -->
+    <div class="quiz-card">
+        <div class="quiz-meta">
+            <span id="question-count">السؤال 1</span>
+            <span style="color: var(--accent-green);" id="section-badge">يمكنك تغيير اختيارك في أي وقت</span>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="question-text" id="question-text"></div>
+
+        <div class="options-list" id="options-container"></div>
+
+        <div class="feedback-box" id="feedback-box">
+            <div class="feedback-title" id="feedback-title">Correct!</div>
+            <div id="feedback-why">Why: ...</div>
+            <div class="feedback-ref" id="feedback-ref">Reference: ...</div>
+        </div>
+
+        <div class="card-actions">
+            <button class="btn-action btn-finish" onclick="resetSection()">إعادة هذا النموذج ↻</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-action" id="prev-btn" onclick="prevQuestion()" disabled>السابق</button>
+                <button class="btn-action btn-next" id="next-btn" onclick="nextQuestion()">التالي</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <div>
+            <span>انتقال سريع إلى: </span>
+            <select id="jump-select" onchange="jumpToQuestion(this.value)"></select>
+        </div>
+        <div id="answered-counter">تمت الإجابة على 0 سؤالاً</div>
+    </div>
 </div>
-</main>
 
 <script>
-const Q=[
-/* Meeting 1 */
-["M1","ما تعريف الـ Algorithm الأدق؟",["مجموعة خطوات مرتبة وواضحة تصف عملية معينة","لغة برمجة","رسم بياني فقط","برنامج جاهز للتشغيل"],0],
-["M1","أي خاصية تعني أن خطوات الخوارزمية واضحة ولا تحمل أكثر من معنى؟",["Input","Unambiguous","Output","Finiteness"],1],
-["M1","كم عدد المدخلات التي يمكن أن تملكها الخوارزمية حسب المحاضرة؟",["واحد فقط","صفر أو أكثر","لا بد من مدخلين","لا يمكن أن تملك مدخلات"],1],
-["M1","كم عدد المخرجات التي ينبغي أن تملكها الخوارزمية؟",["صفر فقط","واحد أو أكثر","مدخل واحد فقط","لا توجد قاعدة"],1],
-["M1","ما المقصود بـ Finiteness؟",["الخوارزمية تعمل بلا نهاية","الخوارزمية تنتهي بعد عدد محدود من الخطوات","الخوارزمية لا تحتاج مدخلات","الخوارزمية مكتوبة بلغة Python"],1],
-["M1","ما المقصود بـ Feasibility؟",["أن تكون الخوارزمية قابلة للتنفيذ بالموارد المتاحة","أن تحتوي على رسم","أن تستخدم while","أن تكون باللغة الإنجليزية"],0],
-["M1","ما المقصود بأن الخوارزمية Independent؟",["تعتمد على Python فقط","خطواتها مستقلة عن كود برمجي محدد","لا تحتوي على Output","لا تحتوي على Input"],1],
-["M1","ما أول خطوة في كتابة Algorithm؟",["اختبار الخوارزمية","تعريف المشكلة","كتابة Python","رسم جدول"],1],
-["M1","ما الذي يجب تحديده بعد تعريف المشكلة؟",["الألوان","المدخلات والمخرجات","نوع الشاشة","اسم المترجم"],1],
-["M1","ما الأداة التي تمثل الخوارزمية بشكل رسومي؟",["Pseudocode","Flowchart","Compiler","Variable"],1],
-["M1","ما الذي تمثله الأشكال في Flowchart؟",["ترتيب الملفات","خطوة في العملية","نوع المتغير","لغة البرمجة"],1],
-["M1","ماذا توضح الأسهم في Flowchart؟",["ترتيب حدوث الخطوات","نوع البيانات","حجم البرنامج","اسم المستخدم"],0],
-["M1","في المحاضرة، توصل صناديق Flowchart بواسطة ماذا؟",["Lines فقط","Arrows","أرقام","تعليقات"],1],
-["M1","كيف تكون اتجاهات Flowchart عادة؟",["من الأسفل للأعلى فقط","من الأعلى للأسفل","دائرية دائمًا","عشوائية"],1],
-["M1","كم مخرجًا يكون لرمز Decision حسب المحاضرة؟",["مخرج واحد","مخرجان","ثلاثة","لا يوجد"],1],
-["M1","ما استخدام Connectors في Flowchart؟",["لتغيير نوع البيانات","للتعامل مع الانقطاعات في المخطط","لتشغيل Python","لحذف الأسهم"],1],
-["M1","بماذا تبدأ وتنتهي جميع Flowcharts؟",["Decision","Terminal","Process","Input"],1],
-["M1","ما المقصود بـ Pseudocode؟",["كود Python قابل للتنفيذ","وصف عام شبيه بالإنجليزية للخوارزمية","مخطط رسومي","ملف .py"],1],
-["M1","هل Pseudocode مرتبط بلغة برمجة محددة؟",["نعم، Python فقط","لا","نعم، Java فقط","نعم، C فقط"],1],
-["M1","أي بنية تنفذ التعليمات واحدة بعد الأخرى؟",["Sequence","Decision","Loop","Sentinel"],0],
-["M1","أي بنية تختار بين مسارات بناءً على شرط؟",["Sequence","Decision","Loop","Input"],1],
-["M1","ما المقصود بالـ iteration؟",["تكرار مجموعة تعليمات","تعريف متغير","طباعة نص","إدخال رقم"],0],
-["M1","أي كلمة تستخدم في pseudocode لتكرار التعليمات طالما الشرط صحيح؟",["WHILE","INPUT","OUTPUT","STOP"],0],
-["M1","في مثال odd/even، ما العملية المستخدمة لمعرفة زوجية الرقم؟",["div","mod","pow","concat"],1],
-["M1","إذا كان number mod 2 = 0 فالعدد يكون؟",["Odd","Even","Negative","Zero دائمًا"],1],
+    const rawData = {
+        m1: [
+            ["An ordered set of unambiguous steps that describes a process is defined as a(n):", ["Program", "Algorithm", "Flowchart", "Compiler"], 1, "An algorithm is an ordered set of unambiguous steps.", "Meeting 1, p. 5"],
+            ["Which flowchart symbol represents Input and Output operations?", ["Terminal", "Parallelogram", "Rectangle", "Diamond"], 1, "Parallelograms represent reading input or printing output.", "Meeting 1, p. 10"],
+            ["Which flowchart symbol represents a Decision step?", ["Rectangle", "Parallelogram", "Diamond", "Oval"], 2, "Diamonds represent decision logic.", "Meeting 1, p. 10"],
+            ["Which symbol denotes Start or End in flowcharts?", ["Connector", "Terminal (Oval)", "Processing", "Flowline"], 1, "Terminal symbols mark start and stop points.", "Meeting 1, p. 10"],
+            ["Pseudocode can be executed directly on a real computer CPU.", ["True", "False"], 1, "Pseudocode is an informal high-level model, not executable.", "Meeting 1, p. 12"],
+            ["Which characteristic states that an algorithm must terminate after a finite number of steps?", ["Unambiguous", "Finiteness", "Feasibility", "Feasible"], 1, "Finiteness ensures algorithms stop after finite steps.", "Meeting 1, p. 6"],
+            ["Which structure executes instructions sequentially line by line?", ["Decision", "Looping", "Sequence", "Selection"], 2, "Sequence structures execute sequentially.", "Meeting 1, p. 13"],
+            ["A special value marking the end of input items in an indefinite loop is a:", ["Counter", "Sentinel value", "Flag", "Operator"], 1, "Sentinel values indicate termination of data input.", "Meeting 1, p. 26"],
+            ["Which symbol is used for Processing / Calculations in flowcharts?", ["Parallelogram", "Rectangle", "Diamond", "Circle"], 1, "Rectangles represent calculations and processing.", "Meeting 1, p. 10"],
+            ["Which flowchart symbol connects different flowlines together?", ["Terminal", "Connector (Circle)", "Diamond", "Rectangle"], 1, "Connectors join flowlines across breaks.", "Meeting 1, p. 10"],
+            ["Algorithms are independent of any specific programming language syntax.", ["True", "False"], 0, "Algorithms describe steps independently of specific code.", "Meeting 1, p. 6"],
+            ["In flowcharts, how many entry points does a Decision symbol have?", ["Zero", "One", "Two", "Three"], 1, "Flowchart symbols have one top entry point.", "Meeting 1, p. 11"],
+            ["How many exit paths does a Decision symbol have in a flowchart?", ["One", "Two", "Three", "Four"], 1, "Decision symbols have two exit paths (True/False).", "Meeting 1, p. 10"],
+            ["Which step comes first in writing an algorithm?", ["List inputs/outputs", "Define the problem", "Test algorithm", "Write code"], 1, "Defining the problem clearly is step 1.", "Meeting 1, p. 7"],
+            ["The tool that uses English-like phrases to outline a program is:", ["Flowchart", "Pseudocode", "Machine code", "Compiler"], 1, "Pseudocode uses English-like phrases.", "Meeting 1, p. 8"],
+            ["Indefinite repetition is also known as sentinel-controlled repetition.", ["True", "False"], 0, "Indefinite repetition continues until a sentinel is entered.", "Meeting 1, p. 26"],
+            ["Where is the entry point located on standard flowchart symbols?", ["Sides", "Top", "Bottom", "Left"], 1, "Entry flowlines connect to the top.", "Meeting 1, p. 11"],
+            ["Which tool graphically depicts logical steps in an algorithm?", ["Pseudocode", "Flowchart", "High-level code", "Documentation"], 1, "Flowcharts visually depict steps using shapes.", "Meeting 1, p. 8"],
+            ["Algorithms must have 0 or more well-defined inputs.", ["True", "False"], 0, "Algorithms can accept 0 or more inputs.", "Meeting 1, p. 6"],
+            ["Algorithms must produce at least 1 or more well-defined outputs.", ["True", "False"], 0, "Algorithms must yield at least 1 output.", "Meeting 1, p. 6"],
+            ["In flowcharts, arrows indicate the direction of logical flow.", ["True", "False"], 0, "Flowlines with arrows show execution direction.", "Meeting 1, p. 10"],
+            ["Which statement structure chooses between two options based on a question?", ["Sequence", "Selection / Decision", "Looping", "Terminal"], 1, "Selection structures choose paths based on conditions.", "Meeting 1, p. 13"],
+            ["In pseudocode, IF...ELSE is used for which structure?", ["Sequence", "Decision", "Looping", "Input"], 1, "IF...ELSE forms decision structures.", "Meeting 1, p. 16"],
+            ["WHILE...ENDWHILE in pseudocode represents which structure?", ["Decision", "Looping", "Sequence", "Output"], 1, "WHILE...ENDWHILE defines loops.", "Meeting 1, p. 20"],
+            ["An algorithm step must be clear and lead to only one meaning. This is:", ["Finiteness", "Unambiguous", "Output", "Feasibility"], 1, "Unambiguous means clear and unique in meaning.", "Meeting 1, p. 6"],
+            ["A flowchart general direction moves from:", ["Bottom to top", "Right to left", "Top to bottom", "Diagonal"], 2, "Flowcharts generally flow top to bottom.", "Meeting 1, p. 11"],
+            ["An upward flowline in a flowchart should not exceed how many symbols?", ["1 symbol", "2 symbols", "3 symbols", "5 symbols"], 2, "Upward flows should not exceed 3 symbols.", "Meeting 1, p. 11"],
+            ["What symbol is used for subroutines independent flowcharts?", ["Circle", "Diamond", "Rectangle with double lines", "Terminal"], 0, "Subroutines start with connectors/terminals.", "Meeting 1, p. 11"],
+            ["Testing an algorithm with sample data sets is the final step before implementation.", ["True", "False"], 0, "Algorithms must be tested with sample data.", "Meeting 1, p. 7"],
+            ["High-level programming languages include Python and Java.", ["True", "False"], 0, "Python and Java are high-level languages.", "Meeting 1, p. 8"],
+            ["Which pseudo-keyword is typically used to display output?", ["Get", "Read", "Print / Output", "Input"], 2, "Print or Output displays results.", "Meeting 1, p. 15"],
+            ["Which pseudo-keyword is typically used to accept input?", ["Write", "Input / Read", "Show", "Output"], 1, "Input or Read receives values.", "Meeting 1, p. 15"],
+            ["Which characteristic requires an algorithm to be possible with available resources?", ["Finiteness", "Feasibility", "Input", "Unambiguous"], 1, "Feasibility ensures practical execution.", "Meeting 1, p. 6"],
+            ["How many entry points does a Processing rectangle symbol have?", ["One", "Two", "Three", "Four"], 0, "Standard symbols have one entry point at the top.", "Meeting 1, p. 11"],
+            ["What shape is used for connectors within the same page?", ["Diamond", "Circle", "Rectangle", "Oval"], 1, "Small circles serve as connectors.", "Meeting 1, p. 10"],
+            ["Pseudocode uses strict programming language syntax rules.", ["True", "False"], 1, "Pseudocode uses informal English without strict rules.", "Meeting 1, p. 12"],
+            ["In pseudocode, variable names should be declared or initialized.", ["True", "False"], 0, "Good pseudocode specifies variables used.", "Meeting 1, p. 14"],
+            ["Which structure repeats code as long as a condition remains True?", ["IF-ELSE", "WHILE loop", "SEQUENCE", "TERMINAL"], 1, "WHILE repeats code while condition is True.", "Meeting 1, p. 20"],
+            ["Can a flowchart have multiple Terminal Stop symbols?", ["Yes", "No"], 0, "Flowcharts can end at different stop points.", "Meeting 1, p. 11"],
+            ["Good pre-code organization reduces programming errors.", ["True", "False"], 0, "Pre-code planning ensures clear logic.", "Meeting 1, p. 4"]
+        ],
+        m2: [
+            ["What is the output of print(10 // 3) in Python?", ["3.333", "3", "1", "3.0"], 1, "// performs integer floor division.", "Meeting 2, p. 28"],
+            ["What is the output of print(10 % 3) in Python?", ["3", "3.33", "1", "0"], 2, "% returns division remainder (10 % 3 = 1).", "Meeting 2, p. 28"],
+            ["Which function converts user input string into numerical types?", ["str()", "eval()", "print()", "len()"], 1, "eval() evaluates user input into values.", "Meeting 2, p. 27"],
+            ["In Python, string indexing starts at position:", ["1", "0", "-1", "None"], 1, "Python uses zero-based indexing.", "Meeting 2, p. 14"],
+            ["What is the result of len('Hello World')?", ["10", "11", "12", "5"], 1, "len() includes spaces (11 characters).", "Meeting 2, p. 14"],
+            ["Which parameter in print() changes item separators?", ["end", "sep", "format", "split"], 1, "sep defines item separation characters.", "Meeting 2, p. 19"],
+            ["What is the result of 'La ' * 3?", ["SyntaxError", "'La La La '", "'LaLaLa'", "'La 3'"], 1, "* duplicates string values.", "Meeting 2, p. 28"],
+            ["Strings in Python are mutable.", ["True", "False"], 1, "Strings are immutable.", "Meeting 2, p. 13"],
+            ["What escape character represents a tab space?", ["\\t", "\\n", "\\\\", "\\'"], 0, "\\t inserts a horizontal tab.", "Meeting 2, p. 20"],
+            ["What is the result of 'Python'[1:4]?", ["'Pyt'", "'yth'", "'ytho'", "'th'"], 1, "[1:4] slices indices 1, 2, 3 ('yth').", "Meeting 2, p. 16"],
+            ["Which step follows 'Write code' in the Development Cycle?", ["Design", "Test", "Correct syntax errors", "Correct logic errors"], 2, "Syntax errors must be corrected after writing code.", "Meeting 2, p. 7"],
+            ["What is a logic error?", ["Prevents running", "Produces incorrect results while running", "Syntax mistake", "Indentation fault"], 1, "Logic errors run but yield wrong answers.", "Meeting 2, p. 8"],
+            ["Which function displays messages to the screen?", ["input()", "print()", "eval()", "format()"], 1, "print() displays specified messages.", "Meeting 2, p. 11"],
+            ["Python is case-sensitive (e.g. Print() vs print()).", ["True", "False"], 0, "Python distinguishes uppercase and lowercase.", "Meeting 2, p. 12"],
+            ["What parameter in print() changes ending newlines?", ["sep", "end", "stop", "close"], 1, "end replaces default newline.", "Meeting 2, p. 18"],
+            ["Comments in Python start with which symbol?", ["//", "/*", "#", "<!--"], 2, "# indicates single-line comments.", "Meeting 2, p. 22"],
+            ["Variables can start with digits in Python.", ["True", "False"], 1, "Variable names cannot start with a number.", "Meeting 2, p. 25"],
+            ["What operator performs exponentiation in Python?", ["^", "**", "//", "pow"], 1, "** is the exponentiation operator.", "Meeting 2, p. 28"],
+            ["Explicit type conversion in Python is called:", ["Casting", "Slicing", "Indexing", "Concatenation"], 0, "Converting types explicitly is type casting.", "Meeting 2, p. 30"],
+            ["Which string method converts all letters to uppercase?", ["toUpper()", "upper()", "capitalize()", "isupper()"], 1, "upper() returns an uppercase copy.", "Meeting 2, p. 34"],
+            ["What is the output of int('100') + int('-90')?", ["100-90", "10", "190", "Error"], 1, "Strings are cast to integers: 100 + (-90) = 10.", "Meeting 2, p. 31"],
+            ["Which function constructs strings from other data types?", ["str()", "int()", "float()", "text()"], 0, "str() converts objects to string.", "Meeting 2, p. 30"],
+            ["What does s.isdigit() return if s = '1234'?", ["True", "False"], 0, "isdigit() returns True if all characters are digits.", "Meeting 2, p. 33"],
+            ["Which method removes leading and trailing whitespace?", ["lstrip()", "rstrip()", "strip()", "clean()"], 2, "strip() removes whitespace from both sides.", "Meeting 2, p. 34"],
+            ["Negative string index -1 refers to which character?", ["First", "Second", "Last", "Middle"], 2, "Index -1 refers to the last character.", "Meeting 2, p. 17"],
+            ["What does round(8 / 3, 2) return?", ["2.66", "2.67", "2.6", "3.0"], 1, "Rounds 2.666... to 2 decimal places.", "Meeting 2, p. 35"],
+            ["What is the data type of x = 5.0?", ["int", "float", "str", "complex"], 1, "Numbers with decimal points are floats.", "Meeting 2, p. 9"],
+            ["Which method returns True if all letters are lowercase?", ["islower()", "lower()", "haslower()", "checklower()"], 0, "islower() tests if letters are lowercase.", "Meeting 2, p. 33"],
+            ["What is the result of 'This is ' + 'one string'?", ["'This is one string'", "TypeError", "'This is + one string'", "None"], 0, "+ concatenates string literals.", "Meeting 2, p. 21"],
+            ["What escape sequence prints a single backslash character?", ["\\b", "\\\\", "\\s", "\\a"], 1, "\\\\ prints a single backslash.", "Meeting 2, p. 20"],
+            ["What is the output of print(format(12345.6789, '.2f'))?", ["12345.67", "12345.68", "12345.7", "12345"], 1, "Formats floating point to 2 decimal places.", "Meeting 2, p. 21"],
+            ["Can reserved keywords (e.g. if, while) be used as variable names?", ["Yes", "No"], 1, "Reserved words cannot be variable names.", "Meeting 2, p. 25"],
+            ["What is the value of 34.0 - 0.1?", ["33.9", "33.0", "34.1", "33"], 0, "Subtraction yields 33.9.", "Meeting 2, p. 28"],
+            ["What does s[::-1] do to a string s?", ["Duplicates it", "Reverses it", "Deletes it", "Capitalizes it"], 1, "Negative step -1 reverses the string.", "Meeting 2, p. 16"],
+            ["Is _my_var a valid variable name in Python?", ["Yes", "No"], 0, "Variables can start with underscores.", "Meeting 2, p. 25"],
+            ["Which mode in Python IDLE gives immediate execution feedback?", ["Script Mode", "Interactive Mode", "Compiler Mode", "Design Mode"], 1, "Interactive Mode executes statements immediately.", "Meeting 2, p. 5"],
+            ["File extension for saved Python scripts is:", [".pyt", ".py", ".pyc", ".p"], 1, "Python scripts save with .py extension.", "Meeting 2, p. 5"],
+            ["Order of operator precedence places Parentheses () highest.", ["True", "False"], 0, "Parentheses have the highest precedence.", "Meeting 2, p. 29"],
+            ["What is the result of 2 ** 3?", ["6", "8", "9", "5"], 1, "2 raised to power 3 is 8.", "Meeting 2, p. 35"],
+            ["Complex numbers in Python take form a + bJ.", ["True", "False"], 0, "Complex numbers use j or J.", "Meeting 2, p. 9"]
+        ],
+        m3: [
+            ["Which relational operator tests for equality?", ["=", "==", "===", "!="], 1, "== checks equality; = assigns.", "Meeting 3, p. 6"],
+            ["For compound expression using and to be True:", ["One subexpression True", "Both subexpressions True", "Neither True", "First False"], 1, "and requires both parts True.", "Meeting 3, p. 20"],
+            ["For compound expression using or to be True:", ["Both True", "At least one subexpression True", "Both False", "None"], 1, "or needs at least one True.", "Meeting 3, p. 20"],
+            ["String comparisons in Python are case-sensitive.", ["True", "False"], 0, "Comparisons depend on case ASCII codes.", "Meeting 3, p. 11"],
+            ["elif is short for:", ["else if", "else loop", "either if", "element if"], 0, "elif stands for 'else if'.", "Meeting 3, p. 15"],
+            ["A Boolean variable signalling condition existence is a:", ["Counter", "Flag", "Constant", "Sentinel"], 1, "Flags signal whether conditions exist.", "Meeting 3, p. 23"],
+            ["Which structure provides two paths based on a condition?", ["Single alt", "Dual alternative (if-else)", "Count loop", "Sequence"], 1, "if-else provides dual paths.", "Meeting 3, p. 9"],
+            ["What is not(5 > 2) value?", ["True", "False"], 1, "not(True) evaluates to False.", "Meeting 3, p. 21"],
+            ["What operator checks if two values are NOT equal?", ["<>", "!=", "==", "not="], 1, "!= is not equal operator.", "Meeting 3, p. 6"],
+            ["A control structure that executes statements conditionally is:", ["Sequence", "Decision / Selection", "Iteration", "Function"], 1, "Decision structures execute conditionally.", "Meeting 3, p. 3"],
+            ["All block statements inside an if statement must be indented.", ["True", "False"], 0, "Python uses indentation to define scope.", "Meeting 3, p. 5"],
+            ["ASCII code establishes character order in memory.", ["True", "False"], 0, "Character comparisons compare ASCII codes.", "Meeting 3, p. 12"],
+            ["In if-elif-else, how many else blocks can exist?", ["Multiple", "Maximum 1", "Unlimited", "Two"], 1, "An if statement can have only one final else block.", "Meeting 3, p. 15"],
+            ["not (A and B) is True when both A and B are True.", ["True", "False"], 1, "If both True, A and B is True, so not makes it False.", "Meeting 3, p. 21"],
+            ["What data type represents Boolean variables in Python?", ["int", "bool", "str", "flag"], 1, "bool stores True or False.", "Meeting 3, p. 23"],
+            ["Using = instead of == in an if condition causes a syntax error.", ["True", "False"], 0, "if x = 1: is invalid Python syntax.", "Meeting 3, p. 24"],
+            ["Which operator reverses truth value?", ["and", "or", "not", "is"], 2, "not reverses truth value.", "Meeting 3, p. 20"],
+            ["If x = 5, what does x > 3 and x < 10 evaluate to?", ["True", "False"], 0, "Both conditions (5 > 3 and 5 < 10) are True.", "Meeting 3, p. 22"],
+            ["Short-circuit evaluation applies to logical operators and & or.", ["True", "False"], 0, "Python stops evaluating as soon as result is known.", "Meeting 3, p. 20"],
+            ["Nested if means placing an if statement inside another if statement.", ["True", "False"], 0, "Nested ifs sit inside outer if blocks.", "Meeting 3, p. 14"],
+            ["What is the output of if 5 >= 5: print('Pass')?", ["Pass", "Nothing", "Error", "False"], 0, "5 >= 5 is True, so 'Pass' is printed.", "Meeting 3, p. 4"],
+            ["Is string 'd' < 'e' True?", ["True", "False"], 0, "ASCII code for 'd' is less than 'e'.", "Meeting 3, p. 13"],
+            ["Shorter string is less than longer string if corresponding characters match.", ["True", "False"], 0, "Shorter matching strings are considered less.", "Meeting 3, p. 13"],
+            ["How many elif blocks can be used in an if-elif-else chain?", ["Only 1", "Maximum 5", "Unlimited", "None"], 2, "There is no limit to elif statements.", "Meeting 3, p. 15"],
+            ["Truth table for A and B: Result is True when:", ["A=True, B=False", "A=False, B=True", "A=True, B=True", "A=False, B=False"], 2, "and requires both True.", "Meeting 3, p. 21"],
+            ["Truth table for A or B: Result is False when:", ["A=True, B=False", "A=False, B=True", "A=True, B=True", "A=False, B=False"], 3, "or is False only when both inputs are False.", "Meeting 3, p. 21"],
+            ["What is output of x = 2; y = 10; if x > 5 or y > 10: x *= 3; print(x)?", ["2", "6", "0", "8"], 0, "Neither condition is True, x remains 2.", "Meeting 3, p. 32"],
+            ["What is output of if not (2 > 5): print('Yes')?", ["Yes", "Nothing", "Error", "No"], 0, "2 > 5 is False, not False is True.", "Meeting 3, p. 22"],
+            ["In dual alternative structure, if condition is False, which block runs?", ["if block", "else block", "Both", "Neither"], 1, "The else block executes when condition is False.", "Meeting 3, p. 9"],
+            ["Can relational operators be used with floating-point numbers?", ["Yes", "No"], 0, "Relational operators work with all numeric types.", "Meeting 3, p. 6"],
+            ["What does expression 10 != 10 evaluate to?", ["True", "False"], 1, "10 is equal to 10, so != is False.", "Meeting 3, p. 7"],
+            ["Logical operator precedence order from highest to lowest is:", ["and, or, not", "not, and, or", "or, and, not", "and, not, or"], 1, "not has highest precedence, then and, then or.", "Meeting 3, p. 20"],
+            ["Evaluating age < 18 or has_student_id when age=20 and has_student_id=True yields:", ["True", "False"], 0, "has_student_id is True, so or yields True.", "Meeting 3, p. 24"],
+            ["Boolean literals in Python are capitalized as True and False.", ["True", "False"], 0, "Boolean literals must start with capital letters.", "Meeting 3, p. 23"],
+            ["Single alternative decision structure uses if without else.", ["True", "False"], 0, "Single alternative contains only an if clause.", "Meeting 3, p. 3"],
+            ["What is the output of if 'apple' == 'Apple': print(1) else: print(2)?", ["1", "2", "SyntaxError", "None"], 1, "Lowercase 'a' != uppercase 'A', prints 2.", "Meeting 3, p. 11"],
+            ["Does Python require parentheses around conditions in if statements?", ["Yes", "No"], 1, "Parentheses are optional in Python if statements.", "Meeting 3, p. 4"],
+            ["What value does sales_quota_met = sales >= 50000 store if sales = 60000?", ["True", "False"], 0, "Relational test assigns Boolean True.", "Meeting 3, p. 23"],
+            ["Compound expressions connect multiple Boolean expressions using logical operators.", ["True", "False"], 0, "Logical operators combine Boolean expressions.", "Meeting 3, p. 20"],
+            ["What is output of x = 0; if x: print('A') else: print('B')?", ["A", "B", "Error", "None"], 1, "0 evaluates to False, executes else block ('B').", "Meeting 3, p. 23"]
+        ],
+        m4: [
+            ["A for loop in Python is a:", ["Condition-controlled loop", "Count-controlled loop", "Infinite loop", "Selection"], 1, "for loops iterate a specific count.", "Meeting 4, p. 3"],
+            ["A while loop in Python is a:", ["Count-controlled loop", "Condition-controlled loop", "Sequence", "Function"], 1, "while loops test conditions.", "Meeting 4, p. 3"],
+            ["What does range(5) generate?", ["1, 2, 3, 4, 5", "0, 1, 2, 3, 4", "0, 1, 2, 3, 4, 5", "1, 2, 3, 4"], 1, "range(5) yields 0 to 4.", "Meeting 4, p. 5"],
+            ["A while loop is classified as a pretest loop.", ["True", "False"], 0, "Condition is tested before execution.", "Meeting 4, p. 17"],
+            ["Which statement terminates loop execution completely?", ["continue", "pass", "break", "exit"], 2, "break exits loop body immediately.", "Meeting 4, p. 23"],
+            ["What does continue do inside a loop?", ["Terminates loop", "Skips rest of current iteration to next", "Exits program", "Restarts"], 1, "continue jumps to next iteration.", "Meeting 4, p. 25"],
+            ["How many total iterations run in: for i in range(2): for j in range(3):?", ["5", "6", "2", "3"], 1, "Outer (2) * Inner (3) = 6 iterations.", "Meeting 4, p. 30"],
+            ["An indefinite loop occurs when loop condition never becomes False.", ["True", "False"], 0, "Unchanged conditions create infinite loops.", "Meeting 4, p. 20"],
+            ["What does range(1, 10, 2) generate?", ["1, 3, 5, 7, 9", "1, 2, 3..10", "2, 4, 6, 8", "1, 3, 5, 7, 9, 10"], 0, "Starts at 1, step 2, stops before 10.", "Meeting 4, p. 9"],
+            ["What does range(5, 1, -1) produce?", ["5, 4, 3, 2, 1", "5, 4, 3, 2", "4, 3, 2, 1", "5, 3, 1"], 1, "Decrements from 5 down to 2.", "Meeting 4, p. 9"],
+            ["The optional else attached to a loop executes if terminated by break.", ["True", "False"], 1, "Loop else runs ONLY if no break occurs.", "Meeting 4, p. 21"],
+            ["Input validation loops repeat as long as input data is invalid.", ["True", "False"], 0, "Validation loops repeat on bad data.", "Meeting 4, p. 19"],
+            ["Target variable in for i in range(...) automatically updates each cycle.", ["True", "False"], 0, "for target variable increments automatically.", "Meeting 4, p. 4"],
+            ["In nested loops, inner loop completes all iterations for each outer iteration.", ["True", "False"], 0, "Inner loop restarts per outer iteration.", "Meeting 4, p. 30"],
+            ["What is output of x = 1; while x < 3: print(x, end=' '); x+=1?", ["1 2 ", "1 2 3 ", "0 1 2 ", "1 "], 0, "Prints 1 then 2, stops at 3.", "Meeting 4, p. 15"],
+            ["Can a while loop contain a for loop inside?", ["Yes", "No"], 0, "Loops can be freely nested.", "Meeting 4, p. 30"],
+            ["What sentinel value is commonly used to stop reading non-negative numbers?", ["Any negative number", "1", "100", "0"], 0, "Negative numbers distinguish end of inputs.", "Meeting 4, p. 18"],
+            ["What is len(text)-1 used for when reversing strings with range?", ["First index", "Last character index", "Middle index", "Length"], 1, "Index of last character is length - 1.", "Meeting 4, p. 11"],
+            ["for i in range(0): executes its body 1 time.", ["True", "False"], 1, "range(0) is empty, loop executes 0 times.", "Meeting 4, p. 5"],
+            ["break and continue can be used in both for and while loops.", ["True", "False"], 0, "Both statements apply to all Python loop types.", "Meeting 4, p. 27"],
+            ["What is the step value by default in range(start, stop)?", ["0", "1", "2", "-1"], 1, "Default step value is 1.", "Meeting 4, p. 5"],
+            ["What is default start value in range(stop)?", ["1", "0", "-1", "None"], 1, "Default start value is 0.", "Meeting 4, p. 5"],
+            ["How many times will for i in range(1, 6): loop?", ["4 times", "5 times", "6 times", "0 times"], 1, "Iterates for 1, 2, 3, 4, 5 (5 times).", "Meeting 4, p. 9"],
+            ["What is output of for i in 'Hi': print(i)?", ["H then i on new lines", "Hi", "H i", "Error"], 0, "Iterates through characters of 'Hi'.", "Meeting 4, p. 4"],
+            ["What is output of x=0; while x<5: x+=1; if x==3: break; print(x, end=' ')?", ["1 2 ", "1 2 3 ", "1 2 4 5 ", "3 "], 0, "When x reaches 3, loop breaks.", "Meeting 4, p. 24"],
+            ["What is output of x=0; while x<5: x+=1; if x==3: continue; print(x, end=' ')?", ["1 2 ", "1 2 3 ", "1 2 4 5 ", "3 "], 2, "3 is skipped, prints 1 2 4 5.", "Meeting 4, p. 26"],
+            ["In nested loop, if outer runs 3 times & inner 4 times, total inner executions =", ["7", "12", "3", "4"], 1, "Total inner executions = 3 * 4 = 12.", "Meeting 4, p. 30"],
+            ["A loop that never stops executing is an infinite loop.", ["True", "False"], 0, "Loops with permanent True conditions run infinitely.", "Meeting 4, p. 20"],
+            ["range(10, 0, -2) generates numbers:", ["10, 8, 6, 4, 2", "10, 9, 8...0", "8, 6, 4, 2, 0", "10, 8, 6, 4, 2, 0"], 0, "Starts at 10, decrements by 2 down to 2.", "Meeting 4, p. 9"],
+            ["Input validation prevents bad data from being processed.", ["True", "False"], 0, "Validation loops re-prompt until valid data.", "Meeting 4, p. 19"],
+            ["Can we use string slicing text[::-1] to reverse a string?", ["Yes", "No"], 0, "Slicing with step -1 reverses strings.", "Meeting 4, p. 11"],
+            ["Is for loop suitable when number of iterations is known in advance?", ["Yes", "No"], 0, "for loop is ideal for known count iteration.", "Meeting 4, p. 3"],
+            ["Is while loop suitable when number of iterations is unknown?", ["Yes", "No"], 0, "while loop is ideal for condition-controlled iteration.", "Meeting 4, p. 13"],
+            ["What happens if initial condition of while loop is False?", ["Runs once", "Body never executes", "Infinite loop", "Syntax error"], 1, "Pretest loops skip body if condition starts False.", "Meeting 4, p. 17"],
+            ["break exits loop, continue skips current iteration.", ["True", "False"], 0, "break halts loop; continue skips to next cycle.", "Meeting 4, p. 27"],
+            ["Nested while loop syntax requires proper indentation.", ["True", "False"], 0, "Indentation defines scope for nested loops.", "Meeting 4, p. 35"],
+            ["What is the output of for i in range(1, 1): print(i)?", ["1", "0", "Nothing", "Error"], 2, "range(1, 1) is empty, produces no output.", "Meeting 4, p. 5"],
+            ["Accumulator variables (e.g. sum = 0) must be initialized before loop.", ["True", "False"], 0, "Accumulators must start with initial value outside loop.", "Meeting 4, p. 22"],
+            ["Counter variables track the number of loop iterations performed.", ["True", "False"], 0, "Counters increment each iteration.", "Meeting 4, p. 22"],
+            ["What is output of x=1; while x<3: print(x); x+=1; else: print('Done')?", ["1 2 Done", "1 2", "Done", "Error"], 0, "Loop finishes normally, executing else block.", "Meeting 4, p. 21"]
+        ],
+        m5: [
+            ["Primary difference between Lists and Tuples:", ["Lists (), Tuples []", "Lists mutable, Tuples immutable", "Tuples store no strings", "Lists faster"], 1, "Lists are mutable; Tuples are immutable.", "Meeting 5, p. 23"],
+            ["Which method inserts an item at a specific index in a list?", ["append()", "insert()", "pop()", "add()"], 1, "insert(index, item) adds item at position.", "Meeting 5, p. 13"],
+            ["How do you create a SINGLE element tuple?", ["(5)", "(5,)", "[5]", "tuple(5)"], 1, "Trailing comma (5,) is required for single tuple.", "Meeting 5, p. 25"],
+            ["Which method removes and returns item at specific index?", ["remove()", "pop()", "delete()", "discard()"], 1, "pop(index) removes and returns item.", "Meeting 5, p. 13"],
+            ["Running sum([['A', 1], ['B', 2]]) causes:", ["SyntaxError", "TypeError", "ValueError", "KeyError"], 1, "sum() fails on nested list objects.", "Meeting 5, p. 39"],
+            ["What is [1, 2] + [3, 4] result?", ["[4, 6]", "[1, 2, 3, 4]", "[[1, 2], [3, 4]]", "TypeError"], 1, "+ concatenates two lists.", "Meeting 5, p. 10"],
+            ["Which function converts a list to a tuple?", ["tuple()", "list()", "convert()", "cast()"], 0, "tuple() converts sequence to tuple.", "Meeting 5, p. 26"],
+            ["Given nums = [10, 20, 30], what is nums[-1]?", ["10", "30", "20", "Error"], 1, "-1 accesses last item.", "Meeting 5, p. 12"],
+            ["Which method removes the FIRST occurrence of a specific value?", ["pop()", "remove()", "delete()", "clear()"], 1, "remove(item) deletes first matching value.", "Meeting 5, p. 13"],
+            ["Which method sorts list items in ascending order in place?", ["sort()", "sorted()", "order()", "arrange()"], 0, "sort() sorts in ascending order.", "Meeting 5, p. 13"],
+            ["What function returns the total count of items in a list?", ["count()", "len()", "sum()", "size()"], 1, "len() returns total list items.", "Meeting 5, p. 20"],
+            ["How do you initialize an empty list?", ["my_list = []", "my_list = list()", "Both A and B", "my_list = {}"], 2, "Both [] and list() create empty lists.", "Meeting 5, p. 5"],
+            ["What happens if you try to concatenate a list with an integer?", ["Item added", "TypeError raised", "Converted to str", "None"], 1, "Concatenating list with non-list raises TypeError.", "Meeting 5, p. 10"],
+            ["Slicing expression format is list[start : stop : step].", ["True", "False"], 0, "Standard slice format uses start, stop, step.", "Meeting 5, p. 11"],
+            ["my_list * 2 creates a list with elements repeated twice.", ["True", "False"], 0, "* operator replicates list items.", "Meeting 5, p. 9"],
+            ["in operator tests if an item exists inside a list.", ["True", "False"], 0, "in checks element membership.", "Meeting 5, p. 7"],
+            ["Two-dimensional list is also known as a nested list.", ["True", "False"], 0, "List of lists is called nested/2D list.", "Meeting 5, p. 21"],
+            ["Tuples support append() and remove() methods.", ["True", "False"], 1, "Tuples are immutable; no append/remove.", "Meeting 5, p. 25"],
+            ["Processing tuples is generally faster than lists.", ["True", "False"], 0, "Tuples offer performance optimization over lists.", "Meeting 5, p. 26"],
+            ["Workaround to modify a tuple: convert to list, change, convert back.", ["True", "False"], 0, "Converting to list allows changing tuple contents.", "Meeting 5, p. 27"],
+            ["What is output of l = [0, 3, 2]; l.reverse(); print(l)?", ["[2, 3, 0]", "[0, 2, 3]", "[0, 3, 2]", "Error"], 0, "reverse() reverses list in place.", "Meeting 5, p. 14"],
+            ["What is output of l = [10, 12, 15, 12]; print(l.count(12))?", ["1", "2", "12", "0"], 1, "count(12) counts occurrences of 12 (returns 2).", "Meeting 5, p. 14"],
+            ["What is output of l = [0, 3, 2]; print(l.index(3))?", ["0", "1", "2", "3"], 1, "index(3) returns first index where 3 occurs (index 1).", "Meeting 5, p. 14"],
+            ["Which function finds the highest value in a list of numbers?", ["max()", "min()", "sum()", "top()"], 0, "max() returns the highest value.", "Meeting 5, p. 20"],
+            ["Which function finds the lowest value in a list of numbers?", ["min()", "max()", "lowest()", "bottom()"], 0, "min() returns the lowest value.", "Meeting 5, p. 20"],
+            ["How do you sort a list in descending order?", ["sort(reverse=True)", "sort(descending=True)", "reverse()", "sort(-1)"], 0, "sort(reverse=True) sorts high to low.", "Meeting 5, p. 13"],
+            ["Given m = [[1, 2], [3, 4]], what is m[1][0]?", ["1", "2", "3", "4"], 2, "m[1] is [3, 4], [0] accesses 3.", "Meeting 5, p. 21"],
+            ["Lists are enclosed in square brackets [].", ["True", "False"], 0, "Lists use square brackets [].", "Meeting 5, p. 4"],
+            ["Tuples are enclosed in parentheses ().", ["True", "False"], 0, "Tuples use parentheses ().", "Meeting 5, p. 23"],
+            ["What does list1 += list2 do?", ["Adds elements to list1", "Clears list1", "Compares lists", "Error"], 0, "+= concatenates list2 onto list1.", "Meeting 5, p. 10"],
+            ["Can lists contain items of different data types (e.g. int and str)?", ["Yes", "No"], 0, "Lists can hold mixed data types.", "Meeting 5, p. 3"],
+            ["What function calculates total sum of numeric list elements?", ["sum()", "total()", "add()", "count()"], 0, "sum() computes total sum.", "Meeting 5, p. 20"],
+            ["How do you initialize an empty tuple?", ["t = ()", "t = tuple()", "Both A and B", "t = []"], 2, "Both () and tuple() create empty tuples.", "Meeting 5, p. 23"],
+            ["What happens if you execute t = (5); print(type(t))?", ["<class 'tuple'>", "<class 'int'>", "<class 'list'>", "Error"], 1, "Without trailing comma, (5) is an int.", "Meeting 5, p. 25"],
+            ["What is output of list('abc')?", ["['a', 'b', 'c']", "['abc']", "TypeError", "None"], 0, "list() converts string characters to list.", "Meeting 5, p. 26"],
+            ["Slicing list1[::2] extracts every second element.", ["True", "False"], 0, "Step 2 skips every other item.", "Meeting 5, p. 12"],
+            ["Method l.append([1, 2]) adds 1 and 2 as separate items.", ["True", "False"], 1, "append adds the nested list as a single item.", "Meeting 5, p. 13"],
+            ["Tuples support indexing and slicing expressions.", ["True", "False"], 0, "Tuples support indexing and slicing.", "Meeting 5, p. 25"],
+            ["Can a list contain another list inside it?", ["Yes", "No"], 0, "Lists can contain nested sub-lists.", "Meeting 5, p. 21"],
+            ["What is the output of ['a', 'b'][0]?", ["'a'", "'b'", "['a']", "Error"], 0, "Index 0 retrieves first item 'a'.", "Meeting 5, p. 11"]
+        ]
+    };
 
-/* Meeting 2 */
-["M2","ماذا تعني IDLE في Python؟",["Integrated DeveLopment Environment","Internet Data Language Engine","Input Data Learning Environment","Integrated Debug Language Editor"],0],
-["M2","أي وضع يعطي Feedback مباشرة للأوامر؟",["Script Mode","Interactive Mode","Flowchart Mode","Compile Mode"],1],
-["M2","أي وضع مناسب لكتابة وحفظ وتشغيل البرامج لاحقًا؟",["Interactive Mode","Script Mode","Decision Mode","Terminal Mode"],1],
-["M2","ما امتداد ملف Python؟",[".python",".py",".pyt",".exe"],1],
-["M2","ما المفتاح المذكور لتشغيل Module في IDLE؟",["F1","F5","F8","F12"],1],
-["M2","ما أول مرحلة في Program Development Cycle؟",["Write Code","Design the Program","Test Program","Correct Logic Errors"],1],
-["M2","ما الذي يحدث بعد تصميم البرنامج؟",["Write the Code","حذف البرنامج","طباعة النتيجة","تغيير الجهاز"],0],
-["M2","ما الخطأ الذي يمنع البرنامج من العمل بشكل صحيح بسبب مخالفة Syntax؟",["Logic Error","Syntax Error","Input Error","Loop Error"],1],
-["M2","ما Logic Error؟",["خطأ يمنع البرنامج من التشغيل دائمًا","خطأ لا يمنع البرنامج من العمل لكنه يعطي نتائج غير صحيحة","خطأ في اسم الملف فقط","خطأ في لوحة المفاتيح"],1],
-["M2","ما نوع البيانات للأعداد الصحيحة؟",["float","int","str","complex"],1],
-["M2","ما نوع البيانات للأعداد العشرية؟",["int","float","bool","list"],1],
-["M2","ما نوع البيانات الذي يمثل True أو False؟",["bool","float","int","complex"],0],
-["M2","أي نوع يمثل complex numbers؟",["complex","tuple","bool","range"],0],
-["M2","كيف يمكن إنشاء String في Python؟",["باستخدام quotes","باستخدام % فقط","باستخدام // فقط","باستخدام range فقط"],0],
-["M2","ماذا تعني == ؟",["إسناد قيمة","مقارنة التساوي","جمع","قسمة"],1],
-["M2","ما ناتج 5 == 4؟",["True","False","5","4"],1],
-["M2","ما ناتج 5 >= 4؟",["True","False","Error","None"],0],
-["M2","ما وظيفة print()؟",["إدخال قيمة","عرض رسالة أو كائن على الشاشة","إنشاء قائمة","تكرار الكود"],1],
-["M2","ما الدالة المستخدمة لإدخال قيمة من المستخدم؟",["input()","print()","eval()","range()"],0],
-["M2","ما نوع القيمة التي تعيدها input() افتراضيًا؟",["int","float","string","bool"],2],
-["M2","أي دالة تحول القيمة إلى int؟",["str()","float()","int()","list()"],2],
-["M2","أي دالة تحول القيمة إلى float؟",["float()","int()","str()","tuple()"],0],
-["M2","أي دالة تحول القيمة إلى string؟",["str()","int()","complex()","range()"],0],
-["M2","أي معامل يستخدم للجمع؟",["+","-","*","/"],0],
-["M2","أي معامل يستخدم للضرب؟",["/","*","//","%"],1],
-["M2","أي معامل يستخدم للقسمة العادية؟",["/","//","%","**"],0],
-["M2","أي معامل يستخدم للقسمة الصحيحة؟",["/","//","%","**"],1],
-["M2","أي معامل يعيد باقي القسمة؟",["%","//","/","**"],0],
-["M2","أي معامل يستخدم للأس؟",["^","**","//","%%"],1],
-["M2","ما ناتج '100' + '-90'؟",["10","100-90","190","Error"],1],
-["M2","ما ناتج 2.5e2؟",["25","250","2500","2.5"],1],
+    function processBank() {
+        const bank = { m1: [], m2: [], m3: [], m4: [], m5: [] };
+        ['m1', 'm2', 'm3', 'm4', 'm5'].forEach(key => {
+            rawData[key].forEach(item => {
+                bank[key].push({
+                    q: item[0],
+                    options: item[1],
+                    correct: item[2],
+                    why: item[3],
+                    ref: item[4]
+                });
+            });
+        });
+        return bank;
+    }
 
-/* Meeting 3 */
-["M3","ما الغرض من Decision Structure؟",["اختيار مسار بناءً على شرط","تخزين قائمة","تكرار دائم","إنشاء ملف"],0],
-["M3","أي كلمة تبدأ الشرط في Python؟",["if","for","while","def"],0],
-["M3","ماذا ينفذ if عندما يكون الشرط True؟",["Block الخاص به","else فقط","لا شيء","البرنامج يتوقف"],0],
-["M3","ماذا يحدث إذا كان شرط if False وكان هناك else؟",["ينفذ if","ينفذ else","ينفذ الاثنين","يتوقف البرنامج"],1],
-["M3","ماذا تفعل else؟",["تلتقط الحالات التي لم تحقق الشروط السابقة","تكرر الكود","تدخل البيانات","تحول النص"],0],
-["M3","ما الكلمة المستخدمة لإضافة شرط آخر بعد if؟",["elseif","elif","else if فقط","another"],1],
-["M3","أي معامل للمقارنة يعني عدم التساوي؟",["==","!=","=","<>"],1],
-["M3","أي معامل يعني التساوي؟",["=","==","===","=>"],1],
-["M3","أي معامل يعني أكبر من؟",["<",">","<=",">="],1],
-["M3","أي معامل يعني أصغر من؟",["<",">","==","!="],0],
-["M3","أي معامل يعني أكبر من أو يساوي؟",["<=",">=","=>","=="],1],
-["M3","أي معامل يعني أصغر من أو يساوي؟",["<=",">=","=<","=="],0],
-["M3","ما وظيفة and؟",["يكفي شرط واحد True","يجب أن يكون كلا الشرطين True","يعكس النتيجة","يحذف الشرط"],1],
-["M3","ما وظيفة or؟",["يجب أن يكون الشرطان True","يكفي أن يكون أحد الشرطين True","يعكس النتيجة","يوقف البرنامج"],1],
-["M3","ما وظيفة not؟",["يجمع شرطين","يعكس الحقيقة Boolean","يقارن النصوص","ينشئ قائمة"],1],
-["M3","ما قيمة not True؟",["True","False","1","None"],1],
-["M3","ما قيمة True and False؟",["True","False","None","Error"],1],
-["M3","ما قيمة True or False؟",["True","False","None","Error"],0],
-["M3","ما قيمة False or False؟",["True","False","1","Error"],1],
-["M3","هل مقارنة Strings في Python حساسة لحالة الأحرف؟",["نعم","لا"],0],
-["M3","هل 'october' تساوي 'October'؟",["نعم","لا"],1],
-["M3","ما المقصود بـ Boolean Variable؟",["متغير له True أو False","متغير نصي فقط","متغير قائمة","متغير عشري فقط"],0],
-["M3","ما معنى Flag في البرمجة حسب المحاضرة؟",["متغير يشير إلى وجود شرط معين","نوع من القوائم","دالة للطباعة","حلقة تكرار"],0],
-["M3","أي حالة مناسبة لاستخدام or: شخص مؤهل إذا كان أقل من 18 أو لديه Student ID؟",["age < 18 and has_student_id","age < 18 or has_student_id","age == 18","not age"],1],
+    const allQuestions = processBank();
+    let activeSection = 'all';
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = [];
 
-/* Meeting 4 */
-["M4","ما النوعان الرئيسيان من loops المذكوران؟",["count-controlled و condition-controlled","input و output","if و else","list و tuple"],0],
-["M4","أي loop يستخدم عادة للـ count-controlled في Python؟",["for","while","if","else"],0],
-["M4","أي loop يستخدم عادة للـ condition-controlled؟",["for","while","if","range"],1],
-["M4","ما الصيغة العامة للـ for loop؟",["for variable in sequence:","for variable if sequence:","loop variable in:","repeat variable:"],0],
-["M4","ماذا يفعل for i in 'Stars'؟",["يمر على أحرف النص","يحسب طول النص فقط","يحذف النص","يحول النص إلى رقم"],0],
-["M4","ماذا تعطي range(5)؟",["0,1,2,3,4","1,2,3,4,5","0,1,2,3,4,5","5 فقط"],0],
-["M4","ما قيمة start الافتراضية في range؟",["0","1","-1","None"],0],
-["M4","ما قيمة step الافتراضية في range؟",["0","1","2","-1"],1],
-["M4","هل stop في range يتم تضمينه؟",["نعم","لا"],1],
-["M4","ما ناتج range(2,6)؟",["2,3,4,5","2,3,4,5,6","1,2,3,4,5","3,4,5,6"],0],
-["M4","ما ناتج range(1,10,2)؟",["1,3,5,7,9","1,2,3,4,5","2,4,6,8,10","10,8,6,4"],0],
-["M4","ما الغرض من Sentinel؟",["قيمة خاصة تشير إلى التوقف عن إدخال/تكرار البيانات","تحويل النص","إنشاء قائمة","طباعة رقم"],0],
-["M4","أي قيمة يمكن أن تكون Sentinel؟",["0","أي قيمة محددة مسبقًا للتوقف","True فقط","لا توجد قيمة"],1],
-["M4","ما الهدف من Input Validation Loop؟",["التأكد من أن المدخلات صحيحة قبل المتابعة","تغيير لون الشاشة","طباعة القائمة","إنشاء tuple"],0],
-["M4","ماذا يفعل break؟",["ينهي الحلقة مبكرًا","يتخطى التكرار الحالي فقط","يعيد تشغيل البرنامج","يزيد العداد"],0],
-["M4","ماذا يفعل continue؟",["ينهي الحلقة كلها","ينهي التكرار الحالي وينتقل للتكرار التالي","يوقف البرنامج","يحذف المتغير"],1],
-["M4","هل continue يوقف الحلقة بالكامل؟",["نعم","لا"],1],
-["M4","في nested loops، ماذا يحدث للـ inner loop لكل iteration من outer loop؟",["يُعاد ويكمل جميع تكراراته","لا يعمل","يعمل مرة واحدة فقط","يُحذف"],0],
-["M4","في nested loop إذا كان outer = 3 iterations وinner = 4 iterations، كم مرة ينفذ جسم inner إجمالًا؟",["7","12","4","3"],1],
-["M4","أي عبارة صحيحة عن break؟",["يسمح بالاستمرار في الحلقة","يسبب early termination للحلقة","يتخطى iteration فقط","لا يؤثر"],1],
-["M4","أي عبارة صحيحة عن continue؟",["يوقف الحلقة","يوقف البرنامج","يوقف current iteration فقط","يحذف الحلقة"],2],
+    function switchSection(secKey) {
+        activeSection = secKey;
 
-/* Meeting 5 */
-["M5","ما الفرق الأساسي بين list و tuple؟",["tuple immutable بينما list قابلة للتغيير","list immutable","لا يوجد فرق","tuple لا يمكن قراءتها"],0],
-["M5","ما index أول عنصر في القائمة؟",["0","1","-1","2"],0],
-["M5","إذا كانت list1=[5,7,9,8,10] فما قيمة list1[0]؟",["5","7","10","0"],0],
-["M5","ما الصيغة العامة للـ slicing؟",["list[start:stop:step]","list(start,stop)","list[start-stop]","list{start:stop}"],0],
-["M5","هل stop في slicing مشمول؟",["نعم","لا"],1],
-["M5","ما ناتج [1,2,3,4,5,6,7,8][1:4]؟",["[1,2,3,4]","[2,3,4]","[2,3,4,5]","[1,2,3]"],1],
-["M5","ما ناتج [1,2,3,4,5,6,7,8][:3]؟",["[1,2,3]","[0,1,2]","[1,2,3,4]","[3,4,5]"],0],
-["M5","ما ناتج [1,2,3,4,5,6,7,8][4:]؟",["[4,5,6,7,8]","[5,6,7,8]","[4,5,6,7]","[1,2,3,4]"],1],
-["M5","ما ناتج [1,2,3,4,5,6,7,8][::2]؟",["[1,3,5,7]","[2,4,6,8]","[1,2,3,4]","[8,6,4,2]"],0],
-["M5","ماذا تفعل append(item)؟",["تضيف العنصر إلى نهاية القائمة","تحذف العنصر","ترتب القائمة","تعكس القائمة"],0],
-["M5","ماذا تفعل index(item)؟",["تعيد index لأول عنصر مطابق","تحذف العنصر","تضيف عنصرًا","تعكس القائمة"],0],
-["M5","ماذا تفعل insert(index,item)؟",["تضيف العنصر في index محدد","تحذف العنصر","ترتب القائمة","تحسب المتوسط"],0],
-["M5","ماذا تفعل sort()؟",["ترتب من الأقل إلى الأعلى/0-9 وA-Z","تحذف القائمة","تعكس القائمة فقط","تكرر العناصر"],0],
-["M5","ماذا تفعل sort(reverse=True)؟",["ترتب من الأعلى إلى الأقل","تحذف آخر عنصر","تضيف عنصرًا","تنسخ القائمة"],0],
-["M5","ماذا تفعل remove(item)؟",["تحذف أول occurrence للقيمة","تحذف آخر عنصر دائمًا","تضيف قيمة","ترتب"],0],
-["M5","ماذا تفعل reverse()؟",["تعكس ترتيب العناصر","ترتب تصاعديًا","تحذف العناصر","تحسب العدد"],0],
-["M5","ماذا تفعل count(item)؟",["تحسب عدد مرات ظهور item","تحذف item","تعيد index","ترتب"],0],
-["M5","ماذا تفعل pop(index)؟",["تحذف العنصر عند index وتعيد قيمته","تضيف عنصرًا","تعكس القائمة","تحسب المتوسط"],0],
-["M5","ما المقصود بـ Two-dimensional list؟",["قائمة تحتوي قوائم داخلها","tuple واحد","قائمة فارغة","قائمة أرقام فقط"],0],
-["M5","هل tuple قابلة للتعديل بعد إنشائها؟",["نعم","لا"],1],
-["M5","كيف تنشئ tuple من عنصر واحد؟",["(5,)","(5)","[5]","tuple[5]"],0],
-["M5","ماذا تعتبر (5) في Python؟",["tuple","int","list","string"],1],
-["M5","أي method لا تدعمها tuple؟",["index()","append()","count()","لا شيء"],1],
-["M5","أي built-in functions تدعمها tuple؟",["sum وlen وmin وmax","append وremove","insert وsort","reverse فقط"],0],
-["M5","كيف تحول tuple إلى list؟",["list(my_tuple)","tuple(my_tuple)","str(my_tuple)","int(my_tuple)"],0],
-["M5","كيف تحول list إلى tuple؟",["tuple(my_list)","list(my_list)","float(my_list)","range(my_list)"],0],
-["M5","لماذا يمكن استخدام tuple؟",["الأمان من التغيير والأداء","لأنها قابلة للتعديل أكثر","لأنها لا يمكن قراءتها","لأنها لا تدعم indexing"],0],
-["M5","هل tuple تدعم slicing؟",["نعم","لا"],0],
-["M5","هل tuple تدعم + و *؟",["نعم","لا"],0],
-["M5","ما نتيجة average للـ second elements في [(1,5),(2,8),(3,11)]؟",["6","8.0","11","5.0"],1],
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        const activeTab = document.getElementById(`tab-${secKey}`);
+        if (activeTab) activeTab.classList.add('active');
 
-/* Extra source-based questions */
-["M1","في خوارزمية إيجاد متوسط ستة أرقام عندما يكون المجموع معطى، كيف يحسب المتوسط؟",["sum + 6","sum / 6","sum * 6","6 / sum"],1],
-["M1","في خوارزمية رقمين التي تحسب sum و product، كيف يحسب product؟",["number1 + number2","number1 - number2","number1 * number2","number1 / number2"],2],
-["M1","في مثال مساحة المثلث، ما الشرط المطلوب للـ base و height؟",["أن يكونا أقل من صفر","أن يكونا أكبر من صفر","أن يكونا متساويين","أن يكون أحدهما نصًا"],1],
-["M1","ما الاسم الآخر لـ Decision Structure في المحاضرة؟",["Selection structure","Sequence structure","Input structure","Terminal structure"],0],
-["M2","أي نوع من البيانات يمكن أن يكتب بالـ scientific notation مثل 2.5e2؟",["int","float","bool","tuple"],1],
-["M2","ما قيمة 2.5e2؟",["25","250","2500","2.5"],1],
-["M2","أي قيمة من التالي Boolean؟",["3.14","True","'True'","3"],1],
-["M2","ما نوع البيانات للنص الموجود بين علامات الاقتباس؟",["string","int","float","complex"],0],
-["M2","ما قيمة 5>=4؟",["True","False","5","4"],0],
-["M2","ما الرمز الذي يجعل ما بعده Comment في Python؟",["//","#","--",";"],1],
-["M2","ما وظيفة end في print()؟",["تحديد ما يطبع في نهاية عملية الطباعة","تحديد بداية البرنامج","تحويل الرقم","إنشاء متغير"],0],
-["M2","ما قيمة end الافتراضية في print()؟",["' '","'\\n'","''","None"],1],
-["M2","ما وظيفة sep في print()؟",["تحديد الفاصل بين عدة arguments","تحديد نهاية البرنامج","تحويل النص إلى رقم","تكرار النص"],0],
-["M2","ما الناتج من print('I','Love','Python',sep='')؟",["I Love Python","ILovePython","I*Love*Python","I-Love-Python"],1],
-["M2","ما وظيفة \\n داخل string؟",["سطر جديد","Tab","مسافة","Backslash"],0],
-["M2","ما وظيفة \\t داخل string؟",["سطر جديد","Tab","حذف النص","اقتباس"],1],
-["M2","ما وظيفة format(12345.6789,'.2f')؟",["عرض الرقم بمنزلتين عشريتين","تحويله إلى int","تقريب إلى 2 فقط","حذف الرقم"],0],
-["M3","إذا كانت if False ثم elif True، أي block ينفذ؟",["if","elif","else","كلها"],1],
-["M3","في if-elif-else، كم else يمكن أن يحتويه if واحد؟",["واحد","اثنان دائمًا","ثلاثة","غير محدود"],0],
-["M3","في if-elif-else، هل يمكن وجود عدة elif؟",["نعم","لا"],0],
-["M3","إذا كان عدد الشروط n في سلسلة if-elif-else، فحسب المحاضرة عدد elif هو؟",["n","n-1","n-2","2n"],2],
-["M3","في مثال x=15، ما الناتج من الشرط الداخلي x>20؟",["above 20","but not above 20","Done فقط","Error"],1],
-["M3","ما المقصود بـ nested if؟",["if داخل if أخرى","if بدون else","عدة loops","قائمة داخل tuple"],0],
-["M3","حسب مثال الدرجات، ما الرسالة للدرجة 90 أو أعلى؟",["Pass","Second Class","First Class","Distinction"],3],
-["M3","حسب مثال الدرجات، ما الرسالة للدرجة 75؟",["Distinction","First Class","Second Class","Fail"],2],
-["M4","أي نوع من الـ loop يستخدم عندما لا نعرف مسبقًا عدد مرات التكرار؟",["Condition-controlled / while","Count-controlled / for","if","range فقط"],0],
-["M4","هل while loop يفحص الشرط قبل تنفيذ التكرار؟",["نعم","لا"],0],
-["M4","إذا أصبح شرط while False، ماذا يحدث؟",["تستمر الحلقة للأبد","تنتهي الحلقة","تبدأ من جديد","ينفذ else دائمًا"],1],
-["M4","في المثال x=1 و while x<4، ما القيم التي يتم تربيعها؟",["0,1,2","1,2,3","1,2,3,4","2,3,4"],1],
-["M4","ما ناتج مربع 3 في مثال while؟",["3","6","9","12"],2],
-["M4","في range(5)، ما آخر رقم في التسلسل؟",["4","5","6","0"],0],
-["M4","ما قيمة step الافتراضية في range؟",["-1","0","1","2"],2],
-["M4","أي عبارة تصف while بأنها pretest loop؟",["تفحص الشرط قبل iteration","تفحص الشرط بعد iteration","لا تفحص الشرط","تفحص الشرط مرة واحدة فقط"],0],
-["M4","في مثال إدخال 10 أرقام، ما الهدف من المتغير largest؟",["تخزين أكبر رقم تم إدخاله حتى الآن","تخزين عدد الأرقام","تخزين أصغر رقم","تخزين المتوسط"],0],
-["M4","في مثال إدخال 10 أرقام، كم مرة تعمل حلقة for؟",["5","10","11","حتى يكتب المستخدم 0"],1],
-["M5","ما نوع البيانات الذي يسمح بتغيير عناصره بعد إنشائه؟",["list","tuple","string فقط","range فقط"],0],
-["M5","ما معنى indexing في القوائم؟",["الوصول إلى عنصر باستخدام موقعه","ترتيب القائمة","حذف القائمة","نسخ القائمة"],0],
-["M5","ما فائدة slicing؟",["استخراج جزء من sequence","حذف كل العناصر","تحويل list إلى tuple فقط","فرز العناصر"],0],
-["M5","ما قيمة [10,20,30][-1]؟",["10","20","30","-1"],2],
-["M5","ماذا يعني ترك start فارغًا في slicing؟",["يبدأ من أول عنصر","يبدأ من آخر عنصر","يبدأ من الصفر دائمًا كقيمة","لا يرجع شيئًا"],0],
-["M5","ماذا يعني ترك stop فارغًا في slicing؟",["يتوقف عند أول عنصر","يمتد إلى نهاية sequence","يعطي آخر عنصر فقط","يعطي index فقط"],1],
-["M5","ما وظيفة list concatenation باستخدام +؟",["دمج القوائم","حذف القوائم","ترتيب القوائم","تكرار العنصر الأخير"],0],
-["M5","ما وظيفة list repetition باستخدام *؟",["تكرار محتوى القائمة","ضرب كل عنصر حسابيًا","حذف القائمة","ترتيب القائمة"],0],
-["M5","في قائمة strings، كيف نعرف عدد strings التي طولها أكبر من 5 في مثال المحاضرة؟",["باستخدام len(s)>5 داخل loop","باستخدام sum(strings)","باستخدام tuple فقط","باستخدام sort فقط"],0],
-["M5","في مثال أطول string، ما أول أطول string في ['apple','banana','kiwi','orange','grape']؟",["apple","banana","orange","grape"],1],
-["M5","في مثال largest prime، ما أكبر prime في [4,6,8,11,13,15]؟",["11","13","15","8"],1],
+        if (secKey === 'all') {
+            currentQuestions = [
+                ...allQuestions.m1,
+                ...allQuestions.m2,
+                ...allQuestions.m3,
+                ...allQuestions.m4,
+                ...allQuestions.m5
+            ];
+            document.getElementById('section-badge').textContent = 'النموذج الشامل الكلي (200 سؤال)';
+        } else {
+            currentQuestions = allQuestions[secKey];
+            document.getElementById('section-badge').textContent = `قسم ${secKey.toUpperCase()} (40 سؤالاً)`;
+        }
 
-/* Code/output */
-["CODE","ما ناتج الكود؟\nfor i in range(5):\n    print(i)",["0 1 2 3 4","1 2 3 4 5","0 1 2 3 4 5","5"],0],
-["CODE","ما ناتج الكود؟\nfor i in range(2,6):\n    print(i)",["2 3 4 5","2 3 4 5 6","1 2 3 4 5","3 4 5 6"],0],
-["CODE","ما ناتج الكود؟\nx=0\nwhile x<3:\n    x+=1\n    print(x)",["0 1 2","1 2 3","1 2","0 1 2 3"],1],
-["CODE","ما ناتج الكود؟\nx=0\nwhile x<5:\n    x+=1\n    if x==3:\n        continue\n    print(x)",["1 2 3 4 5","1 2 4 5","0 1 2 4","1 2"],1],
-["CODE","ما ناتج الكود؟\nx=0\nwhile x<5:\n    x+=1\n    if x==3:\n        break\n    print(x)",["1 2","1 2 3","1 2 4 5","3"],0],
-["CODE","ما ناتج الكود؟\na=33\nb=200\nif b>a:\n    print('b is greater than a')",["b is greater than a","a is greater than b","False","لا شيء"],0],
-["CODE","ما ناتج الكود؟\nname1='Majed'\nname2='Majeda'\nif name1==name2:\n    print('same')\nelse:\n    print('NOT same')",["same","NOT same","True","Error"],1],
-["CODE","ما ناتج الكود؟\nprint(5+2*4)",["28","13","20","11"],1],
-["CODE","ما ناتج الكود؟\nprint('Hi'*3)",["HiHiHi","Hi3","3Hi","Error"],0],
-["CODE","ما ناتج الكود؟\nprint('A'+'B')",["AB","A B","A+B","Error"],0],
-["CODE","ما ناتج الكود؟\nprint([1,2,3][1])",["1","2","3","0"],1],
-["CODE","ما ناتج الكود؟\na=[1,2,3]\na.append(4)\nprint(a)",["[1,2,3]","[1,2,3,4]","[4,1,2,3]","4"],1],
-["CODE","ما ناتج الكود؟\na=[3,1,2]\na.sort()\nprint(a)",["[3,1,2]","[1,2,3]","[2,1,3]","3"],1],
-["CODE","ما ناتج الكود؟\nt=(1,2,3)\nprint(t[1])",["1","2","3","Error"],1],
-["CODE","ما ناتج الكود؟\nprint(5%2)",["0","1","2","2.5"],1]
-];
+        userAnswers = new Array(currentQuestions.length).fill(null);
+        currentIndex = 0;
 
-let pool=[],current=0,answers=[],picked=[],selectedSection='ALL';
-function shuffle(a){return a.sort(()=>Math.random()-0.5)}
-function historyKey(){return 'tm111_used_' + selectedSection;}
-function getUsed(){try{return JSON.parse(localStorage.getItem(historyKey())||'[]')}catch(e){return []}}
-function saveUsed(ids){localStorage.setItem(historyKey(),JSON.stringify(ids))}
-function resetHistory(){
-  if(confirm('هل تريد مسح سجل الأسئلة التي حللتها والبدء من جديد؟')){
-    if(selectedSection==='ALL'){
-      ['M1','M2','M3','M4','M5','ALL'].forEach(k=>localStorage.removeItem('tm111_used_'+k));
-    }else localStorage.removeItem(historyKey());
-    alert('تم مسح سجل الأسئلة.');
-  }
-}
-function selectSection(section){
- selectedSection=section;
- const names={M1:'Meeting 1 — Algorithms, Flowcharts & Pseudocode',M2:'Meeting 2 — Fundamentals of Python Programming',M3:'Meeting 3 — Decision Structures & Boolean Logic',M4:'Meeting 4 — Repetition Structures & Loops',M5:'Meeting 5 — Collection Data Types',ALL:'اختبار شامل — جميع الاجتماعات'};
- document.getElementById('selectedTitle').textContent='القسم المختار: '+names[section];
- document.getElementById('settingsBox').style.display='block';
- document.getElementById('settingsBox').scrollIntoView({behavior:'smooth',block:'center'});
-}
-function startQuiz(){
- const n=+document.getElementById('count').value, mode=document.getElementById('mode').value;
- let p=Q.filter(x=>
-   (selectedSection==='ALL'||x[0]===selectedSection) &&
-   (mode==='all'||(mode==='code'&&x[0]==='CODE')||(mode==='mcq'&&x[0]!=='CODE'))
- );
- if(selectedSection!=='ALL' && mode==='code') p=[];
- if(!p.length){alert('لا توجد أسئلة من النوع المختار في هذا القسم.');return}
+        populateJumpSelect();
+        loadQuestion(0);
+    }
 
- // Use the array index as a stable question ID. Previously completed questions are excluded.
- const allIds=p.map(x=>Q.indexOf(x));
- const used=getUsed().filter(id=>allIds.includes(id));
- const available=p.filter(x=>!used.includes(Q.indexOf(x)));
- let chosen;
- if(available.length>=n){
-   chosen=shuffle([...available]).slice(0,n);
- }else{
-   // If fewer than requested remain, give all remaining instead of repeating.
-   chosen=shuffle([...available]);
- }
- if(!chosen.length){
-   alert('خلصت كل أسئلة هذا القسم بدون تكرار 🎉\nاضغط "مسح سجل الأسئلة السابقة" إذا تبي تعيد البنك من البداية.');
-   return;
- }
- pool=chosen;
- answers=Array(pool.length).fill(null);current=0;
- document.getElementById('home').style.display='none';
- document.getElementById('quiz').style.display='block';render();
-}
-function render(){
- const x=pool[current], title=x[0]==='CODE'?'أسئلة الأكواد والمخرجات':x[0]==='M1'?'Meeting 1 — Algorithms':x[0]==='M2'?'Meeting 2 — Python':x[0]==='M3'?'Meeting 3 — Decisions':x[0]==='M4'?'Meeting 4 — Repetition':'Meeting 5 — Collections';
- document.getElementById('num').textContent=`السؤال ${current+1} من ${pool.length}`;
- document.getElementById('cat').textContent=title;
- document.getElementById('bar').style.width=((current+1)/pool.length*100)+'%';
- let text=x[1], parts=text.split('\n'), html=`<div class="q">${parts[0]}`;
- if(parts.length>1) html+=`<div class="code">${parts.slice(1).join('\n')}</div>`;
- html+=`</div>`;
- x[2].forEach((o,i)=>html+=`<label class="option"><input type="radio" name="ans" value="${i}" ${answers[current]===i?'checked':''}>${o}</label>`);
- document.getElementById('question').innerHTML=html;
- document.querySelector('.prev').style.visibility=current?'visible':'hidden';
- document.querySelector('.next').textContent=current===pool.length-1?'إنهاء الاختبار':'التالي';
-}
-function save(){let e=document.querySelector('input[name="ans"]:checked');if(e)answers[current]=+e.value}
-function nextQ(){save();if(current<pool.length-1){current++;render()}else finish()}
-function prevQ(){save();if(current){current--;render()}}
-function finish(){
- save();let score=0,review='';
- pool.forEach((x,i)=>{
-  let ok=answers[i]===x[3];if(ok)score++;
-  review+=`<div class="reviewItem ${ok?'good':'bad'}"><b>السؤال ${i+1}</b> — ${ok?'✓ صحيح':'✗ خطأ'}<br>${ok?'':'الإجابة الصحيحة: '+x[2][x[3]]}</div>`;
- });
- // Mark these questions as used only after the whole quiz is completed.
- const oldUsed=getUsed();
- const newIds=pool.map(x=>Q.indexOf(x));
- saveUsed([...new Set([...oldUsed,...newIds])]);
+    function populateJumpSelect() {
+        const select = document.getElementById('jump-select');
+        select.innerHTML = '';
+        currentQuestions.forEach((_, idx) => {
+            const opt = document.createElement('option');
+            opt.value = idx;
+            opt.textContent = `السؤال ${idx + 1}`;
+            select.appendChild(opt);
+        });
+    }
 
- document.getElementById('quiz').style.display='none';document.getElementById('result').style.display='block';
- let pct=Math.round(score/pool.length*100);
- document.getElementById('score').textContent=`${score} / ${pool.length} — ${pct}%`;
- document.getElementById('msg').textContent=pct===100?'ممتاز! كل الإجابات صحيحة 🔥':pct>=85?'ممتاز جدًا، مستواك قوي 💪':pct>=70?'جيد جدًا، راجع الأخطاء البسيطة 📚':'راجع المحاضرات وحاول مرة ثانية 💡';
- const remaining=Q.filter(x=>(selectedSection==='ALL'||x[0]===selectedSection)&&!getUsed().includes(Q.indexOf(x))).length;
- document.getElementById('review').innerHTML=`<div class="noRepeatNote">🔒 بقي لك تقريبًا ${remaining} سؤال غير محلول في هذا القسم قبل أن يبدأ التكرار.</div>`+review;
- window.scrollTo({top:0,behavior:'smooth'});
-}
+    function loadQuestion(index) {
+        currentIndex = index;
+        const q = currentQuestions[index];
+
+        document.getElementById('question-count').textContent = `السؤال ${index + 1} من ${currentQuestions.length}`;
+        document.getElementById('progress-bar').style.width = `${((index + 1) / currentQuestions.length) * 100}%`;
+        document.getElementById('jump-select').value = index;
+
+        document.getElementById('question-text').textContent = `${index + 1}. ${q.q}`;
+
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+
+        q.options.forEach((optText, optIdx) => {
+            const optDiv = document.createElement('div');
+            optDiv.className = `option-item ${userAnswers[index] === optIdx ? 'selected' : ''}`;
+            optDiv.onclick = () => selectOption(optIdx);
+
+            optDiv.innerHTML = `
+                <div class="radio-icon"></div>
+                <div>${optText}</div>
+            `;
+            container.appendChild(optDiv);
+        });
+
+        document.getElementById('prev-btn').disabled = index === 0;
+        document.getElementById('next-btn').textContent = index === currentQuestions.length - 1 ? 'إنهاء النموذج' : 'التالي';
+
+        showFeedback();
+        updateAnsweredCounter();
+    }
+
+    function selectOption(optionIndex) {
+        userAnswers[currentIndex] = optionIndex;
+        loadQuestion(currentIndex);
+    }
+
+    function showFeedback() {
+        const fbBox = document.getElementById('feedback-box');
+        const selected = userAnswers[currentIndex];
+        const q = currentQuestions[currentIndex];
+
+        if (selected === null) {
+            fbBox.style.display = 'none';
+            return;
+        }
+
+        fbBox.style.display = 'block';
+        const isCorrect = selected === q.correct;
+
+        if (isCorrect) {
+            fbBox.className = 'feedback-box correct';
+            document.getElementById('feedback-title').textContent = 'Correct!';
+        } else {
+            fbBox.className = 'feedback-box incorrect';
+            document.getElementById('feedback-title').textContent = 'Incorrect.';
+        }
+
+        document.getElementById('feedback-why').textContent = `Why: ${q.why}`;
+        document.getElementById('feedback-ref').textContent = `Reference: ${q.ref}`;
+    }
+
+    function updateAnsweredCounter() {
+        const count = userAnswers.filter(a => a !== null).length;
+        document.getElementById('answered-counter').textContent = `تمت الإجابة على ${count} من أصل ${currentQuestions.length} سؤالاً`;
+    }
+
+    function nextQuestion() {
+        if (currentIndex < currentQuestions.length - 1) {
+            loadQuestion(currentIndex + 1);
+        } else {
+            const correctCount = userAnswers.filter((ans, idx) => ans === currentQuestions[idx].correct).length;
+            alert(`أحسنت! لقد أنهيت هذا النموذج.\nنتيجة الإجابات الصحيحة: ${correctCount} من أصل ${currentQuestions.length}`);
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            loadQuestion(currentIndex - 1);
+        }
+    }
+
+    function jumpToQuestion(index) {
+        loadQuestion(parseInt(index));
+    }
+
+    function resetSection() {
+        userAnswers.fill(null);
+        loadQuestion(0);
+    }
+
+    // Launch immediately on page load
+    switchSection('all');
 </script>
+
 </body>
 </html>
